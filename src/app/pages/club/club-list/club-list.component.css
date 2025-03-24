@@ -1,0 +1,22 @@
+.create-button-row button {
+  background-color: #008000 !important; /* Green background */
+  color: white !important; /* White text for better contrast */
+}
+
+.delete-button-row button {
+  background-color: #ca0e0e !important; /* Green background */
+  color: white !important; /* White text for better contrast */
+}
+
+.button-container {
+  display: flex;
+  gap: 12px; /* Space between buttons */
+  align-items: center; /* Aligns buttons vertically */
+  margin-left: 950px;
+}
+
+.create-button-row,
+.delete-button-row {
+  display: inline-block; /* Ensures both elements behave like inline elements */
+  
+}

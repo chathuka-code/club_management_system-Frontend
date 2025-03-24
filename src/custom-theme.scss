@@ -1,7 +1,6 @@
-
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
 // Plus imports for other components in your app.
 
 // Include the common styles for Angular Material. We include this here so that you only
@@ -10,53 +9,106 @@
 @include mat.core();
 
 // Define the theme object.
-$club_management_system-theme: mat.define-theme((
-  color: (
-    theme-type: light,
-    primary: mat.$azure-palette,
-    tertiary: mat.$blue-palette,
-  ),
-  density: (
-    scale: 0,
+$club_management_system-theme: mat.define-theme(
+  (
+    color: (
+      theme-type: light,
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    density: (
+      scale: 0,
+    ),
   )
-));
+);
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 :root {
   @include mat.all-component-themes($club_management_system-theme);
-  @include mat.toolbar-overrides((
-    container-background-color: green,
-    container-text-color: rgb(236, 218, 24),
-  ));
+  @include mat.toolbar-overrides(
+    (
+      container-background-color: green,
+      container-text-color: rgb(236, 218, 24),
+    )
+  );
+
+  /* Ensures full height for main layout */
+  .main-container {
+    display: flex;
+    height: calc(100vh - 64px); // Adjusting for header height
+  }
+
+  /* Sidebar Styles */
+  .sidenav-container {
+    width: 200px;
+    flex-shrink: 0;
+  }
 
   mat-sidenav {
-    background-color: #c4c7c4; // Dark blue background
-    color: #ecf0f1; // Light text color
+    border-top-right-radius: 0%;
+    border-bottom-right-radius: 0%;
+    background-color: #c4c7c4;
+    color: #ecf0f1;
     width: 200px !important;
   }
-  
+
+  /* Ensure nav links align properly */
   mat-nav-list a {
-    color: #ecf0f1; // Text color for menu items
+    color: #ecf0f1;
     text-decoration: none;
     display: flex;
     align-items: center;
     padding: 12px;
     transition: background 0.3s ease;
   }
-  
+
   mat-nav-list a:hover {
-    background-color: rgba(255, 255, 255, 0.1); // Slight highlight on hover
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 0%;
   }
-  
+
+  mat-nav-list a:focus {
+    border-radius: 0%;
+  }
+
   mat-icon {
-    color: #ecf0f1; // Icon color
+    color: #ecf0f1;
     margin-right: 10px;
   }
-  
-  mat-sidenav-content {
-    background-color: #f4f6f7; // Light background for content area
+
+  /* Main Content Container */
+  .content-container {
+    flex-grow: 1;
+    overflow-x: auto;
+    padding: 20px;
+    background-color: #f4f6f7;
+    /* Remove display: flex or adjust it */
+    display: block;
+  }
+
+  /* Table Container */
+  .table-container {
+    width: 95%;
+    /* Remove any max-width constraint */
+    max-width: none;
+    overflow-x: auto;
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  /* Table Styles */
+  .demo-table {
+    width: 100%;
+    background: white;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+    /* Optionally ensure a minimum width if you want it bigger than the content */
+    /* min-width: 800px; */
   }
 }
 

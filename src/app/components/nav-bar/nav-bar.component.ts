@@ -28,7 +28,7 @@ export class NavBarComponent {
     {
       icon:'home',
       label:'Club',
-      route:'club'
+      route:'/clubs'
     },
     {
       icon:'handshake',

@@ -33,7 +33,7 @@ export class NavBarComponent {
     {
       icon:'handshake',
       label:'Field',
-      route:'field'
+      route:'/chooseClub'
     },
     {
       icon:'book',

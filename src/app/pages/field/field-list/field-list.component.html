@@ -1,0 +1,12 @@
+<div class="button-container">
+    <span class="create-button-row">
+      <button mat-flat-button (click)="navigateToCreateField()">
+        Create
+      </button>
+    </span>
+    <span class="delete-button-row">
+      <button mat-flat-button>Delete</button>
+    </span>
+  </div>
+  
+  <app-table [columns]="fieldColumns" [data]="fieldData"></app-table>

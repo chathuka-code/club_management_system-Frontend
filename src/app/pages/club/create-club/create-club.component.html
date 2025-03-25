@@ -10,13 +10,12 @@
   </mat-form-field>
 
   <mat-form-field appearance="outline">
-    <mat-label>Country-Code</mat-label>
-    <input
-      matInput
-      placeholder="Enter Country-Code"
-      [(ngModel)]="club.countryCode"
-      required
-    />
+    <mat-label>Country Code</mat-label>
+    <mat-select [(ngModel)]="club.countryCode" required>
+      <mat-option *ngFor="let country of countries()" [value]="country.code">
+        {{ country.name }} ({{ country.code }})
+      </mat-option>
+    </mat-select>
   </mat-form-field>
 
   <mat-form-field appearance="outline">
@@ -41,6 +40,6 @@
     <input matInput name="logo" [(ngModel)]="club.logo" />
   </mat-form-field>
   <div class="example-button-row">
-    <button mat-flat-button (click)="showData()">Submit</button>
+    <button mat-flat-button (click)="createClub()">Submit</button>
   </div>
 </div>

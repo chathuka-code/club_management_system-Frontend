@@ -1,0 +1,70 @@
+<div class="form-container">
+  <mat-form-field appearance="outline">
+    <mat-label>Field Name</mat-label>
+    <input
+      matInput
+      placeholder="Enter Your Name"
+      [(ngModel)]="field.fieldName"
+      required
+    />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Address</mat-label>
+    <input
+      matInput
+      placeholder="Enter Your Address"
+      [(ngModel)]="field.address"
+      required
+    />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Facilities Info</mat-label>
+    <input
+      matInput
+      placeholder="Enter Your Address"
+      [(ngModel)]="field.facilitiesInfo"
+      required
+    />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Description</mat-label>
+    <textarea
+      matInput
+      name="description"
+      [(ngModel)]="field.description"
+    ></textarea>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Deck Type</mat-label>
+    <input
+      matInput
+      placeholder="Enter Deck Type"
+      [(ngModel)]="field.deckType"
+      required
+    />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Has Lighting</mat-label>
+    <mat-select [(ngModel)]="field.hasLighting">
+      <mat-option value="true">Yes</mat-option>
+      <mat-option value="false">No</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Has Heating</mat-label>
+    <mat-select [(ngModel)]="field.hasHeating">
+      <mat-option value="true">Yes</mat-option>
+      <mat-option value="false">No</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div class="example-button-row">
+    <button mat-flat-button (click)="createField()">Submit</button>
+  </div>
+</div>

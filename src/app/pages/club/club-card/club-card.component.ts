@@ -5,12 +5,13 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
 interface Club {
-  id : string;
+  id: string;
   clubName: string;
   countryCode: string;
   activatedStatus: 'active' | 'inactive';
   description: string;
   logo: string;
+  isDeleted: boolean;
 }
 
 @Component({

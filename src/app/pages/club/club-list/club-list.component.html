@@ -9,4 +9,4 @@
   </span>
 </div>
 
-<app-table [columns]="userColumns" [data]="userData"></app-table>
+<app-table [columns]="userColumns" [data]="userData" (selectedRows)="handleSelectedRows($event)"></app-table>

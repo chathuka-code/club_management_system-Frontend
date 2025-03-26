@@ -3,18 +3,7 @@ import { TableComponent } from '../../../components/table/table.component';
 import { MatButtonModule } from '@angular/material/button';
 import { TableColumn } from '../../../components/table/table.component';
 import { Router, ActivatedRoute } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-
-interface Field {
-  fieldName: string;
-  address: string;
-  facilitiesInfo: string;
-  description: string;
-  deckType: string;
-  hasLighting: boolean;
-  hasHeating: boolean;
-  clubId: string;
-}
+import { FieldService, Field } from '../field.service';
 
 @Component({
   selector: 'app-field-list',
@@ -26,16 +15,23 @@ interface Field {
 export class FieldListComponent implements OnInit {
   constructor(private router: Router) {}
 
-  private http = inject(HttpClient);
   private route = inject(ActivatedRoute);
+  private fieldService = inject(FieldService);
   clubId: string | null = null;
+  fieldData: Field[] = [];
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       this.clubId = params.get('clubId');
       console.log('Received clubId:', this.clubId);
     });
-    this.getAllFields();
+    if (this.clubId) {
+      this.fieldService
+        .getAllFields(this.clubId)
+        .subscribe((fields: Field[]) => {
+          this.fieldData = fields;
+        });
+    }
   }
 
   fieldColumns: TableColumn[] = [
@@ -48,18 +44,14 @@ export class FieldListComponent implements OnInit {
     { key: 'hasHeating', label: 'Heating Available' },
   ];
 
-  fieldData: Field[] = [];
+  selectedRows: any[] = [];
 
   navigateToCreateField() {
     this.router.navigate(['chooseClub/fields/createField', this.clubId]);
   }
 
-  getAllFields() {
-    this.http.get<Field[]>(`http://localhost:3000/fields?clubId=${this.clubId}`).subscribe({
-      next: (response) => {
-        console.log('Fields:', response);
-        this.fieldData = response;
-      },
-    });
+  handleSelectedRows(selectedRows: any[]) {
+    console.log('Selected rows:', selectedRows);
+    this.selectedRows = selectedRows;
   }
 }

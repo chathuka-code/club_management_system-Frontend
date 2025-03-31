@@ -1,0 +1,47 @@
+<div class="form-container">
+    <mat-form-field appearance="outline">
+      <mat-label>Club Name</mat-label>
+      <input
+        matInput
+        placeholder="Enter Your Name"
+        [(ngModel)]="club.clubName"
+        required
+        disabled="true"
+      />
+    </mat-form-field>
+  
+    <mat-form-field appearance="outline">
+      <mat-label>Country Code</mat-label>
+      <mat-select [(ngModel)]="club.countryCode" required>
+        <mat-option *ngFor="let country of countries()" [value]="country.code">
+          {{ country.name }} ({{ country.code }})
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  
+    <mat-form-field appearance="outline">
+      <mat-label>Activated-Status</mat-label>
+      <mat-select [(ngModel)]="club.activatedStatus">
+        <mat-option value="active">Active</mat-option>
+        <mat-option value="inactive">Inactive</mat-option>
+      </mat-select>
+    </mat-form-field>
+  
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <textarea
+        matInput
+        name="description"
+        [(ngModel)]="club.description"
+      ></textarea>
+    </mat-form-field>
+  
+    <mat-form-field appearance="outline">
+      <mat-label>Logo URL</mat-label>
+      <input matInput name="logo" [(ngModel)]="club.logo" />
+    </mat-form-field>
+    <div class="example-button-row">
+      <button mat-flat-button (click)="saveClub()">Save</button>
+    </div>
+  </div>
+  

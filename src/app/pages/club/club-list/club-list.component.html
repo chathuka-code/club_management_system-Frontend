@@ -5,8 +5,8 @@
     </button>
   </span>
   <span class="delete-button-row">
-    <button mat-flat-button color="warn">Delete</button>
+    <button mat-flat-button color="warn" (click)="deleteClubs()">Delete</button>
   </span>
 </div>
 
-<app-table [columns]="userColumns" [data]="userData" (selectedRows)="handleSelectedRows($event)"></app-table>
+<app-table [columns]="userColumns" [data]="userData()" (selectedRows)="handleSelectedRows($event)" (editClicked)="handleEdit($event)"></app-table>

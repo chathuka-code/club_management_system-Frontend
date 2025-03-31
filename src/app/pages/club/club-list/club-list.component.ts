@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { TableComponent } from '../../../components/table/table.component';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
@@ -16,11 +16,12 @@ export class ClubListComponent implements OnInit {
   constructor(private router: Router) {}
 
   private clubService = inject(ClubService);
-  userData: Club[] = [];
+  userData = signal<Club[]>([]);
+  selectedRowIds: string[] = [];
 
   ngOnInit(): void {
     this.clubService.getAllClubs().subscribe((clubs: Club[]) => {
-      this.userData = clubs;
+      this.userData.set(clubs);
     });
   }
 
@@ -37,6 +38,18 @@ export class ClubListComponent implements OnInit {
   }
 
   handleSelectedRows(selectedRows: any[]) {
-    console.log('Selected rows:', selectedRows);
+    this.selectedRowIds = selectedRows.map((row) => row.id);
+  }
+
+  deleteClubs() {
+    this.clubService.deleteClub(this.selectedRowIds).subscribe(() => {
+      this.clubService.getAllClubs().subscribe((clubs: Club[]) => {
+        this.userData.set(clubs);
+      });
+    });
+  }
+
+  handleEdit(clubId: string) {
+    this.router.navigate(['/clubs/editClub', clubId]);
   }
 }

@@ -3,12 +3,13 @@
     <button mat-flat-button (click)="navigateToCreateField()">Create</button>
   </span>
   <span class="delete-button-row">
-    <button mat-flat-button>Delete</button>
+    <button mat-flat-button (click)="deleteFields()">Delete</button>
   </span>
 </div>
 
 <app-table
   [columns]="fieldColumns"
-  [data]="fieldData"
+  [data]="fieldData()"
   (selectedRows)="handleSelectedRows($event)"
+  (editClicked)="handleEdit($event)"
 ></app-table>

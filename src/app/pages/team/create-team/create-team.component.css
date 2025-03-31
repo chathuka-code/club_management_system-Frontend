@@ -1,0 +1,33 @@
+/* Center the form and set max width */
+.form-container {
+    max-width: 600px;
+    margin: auto;
+    margin-top: 175px;
+    padding: 20px;
+  }
+  
+  /* Style form fields */
+  mat-form-field {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+  
+  /* Add some spacing */
+  .mat-mdc-text-field-wrapper {
+    padding: 10px;
+  }
+  
+  .example-button-row {
+    display: flex;
+    justify-content: flex-end; /* Align button to the right */
+  }
+  
+  .example-button-row button {
+    background-color: #008000 !important; /* Green background */
+    color: white !important; /* White text for better contrast */
+  }
+  
+  /* Improve placeholder visibility */
+  ::placeholder {
+    color: rgba(0, 0, 0, 0.6);
+  }

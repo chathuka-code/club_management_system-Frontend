@@ -1,2 +1,11 @@
+/* Add this to your component's CSS */
 
+.dark-grey-button {
+  color: rgba(0, 0, 0, 0.87);  
+  background-color: #c2bdbd;    
+  
+  &:hover {
+    background-color: #757575;  
+  }
+}
 

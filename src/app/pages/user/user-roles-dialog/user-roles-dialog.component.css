@@ -1,0 +1,43 @@
+.dialog-content {
+  padding: 5px;
+}
+
+.form-section {
+  margin-bottom: 24px;
+  margin-right: 16px;
+}
+
+.form-row {
+  margin-bottom: 16px;
+}
+
+.form-group {
+  display: flex;
+  gap: 16px;
+  margin-right: 20px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.form-field-spacing {
+  flex: 1;
+  min-width: 250px;
+}
+
+.assign-button-row {
+    /* Reduce the button padding */
+    button {
+      padding: 0 16px;  /* Reduced from default 0 24px */
+      line-height: 36px; /* Reduced from default 40px */
+      font-size: 14px;   /* Optional: Reduce font size slightly */
+    }
+  
+    /* Reduce the button's minimum width */
+    .mat-flat-button {
+      min-width: 80px;   /* Reduced from default 88px */
+    }
+  
+    
+  }

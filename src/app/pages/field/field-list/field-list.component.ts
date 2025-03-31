@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { TableComponent } from '../../../components/table/table.component';
 import { MatButtonModule } from '@angular/material/button';
 import { TableColumn } from '../../../components/table/table.component';
@@ -18,7 +18,8 @@ export class FieldListComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private fieldService = inject(FieldService);
   clubId: string | null = null;
-  fieldData: Field[] = [];
+  fieldData = signal<Field[]>([]);
+  selectedRowIds: string[] = [];
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
@@ -29,7 +30,7 @@ export class FieldListComponent implements OnInit {
       this.fieldService
         .getAllFields(this.clubId)
         .subscribe((fields: Field[]) => {
-          this.fieldData = fields;
+          this.fieldData.set(fields);
         });
     }
   }
@@ -51,7 +52,24 @@ export class FieldListComponent implements OnInit {
   }
 
   handleSelectedRows(selectedRows: any[]) {
-    console.log('Selected rows:', selectedRows);
-    this.selectedRows = selectedRows;
+    this.selectedRowIds = selectedRows.map((row) => row.id);
+  }
+
+  deleteFields() {
+    if (this.clubId) {
+      if (this.clubId) {
+        this.fieldService.deleteFields(this.selectedRowIds).subscribe(() => {
+          this.fieldService
+            .getAllFields(this.clubId!)
+            .subscribe((fields: Field[]) => {
+              this.fieldData.set(fields);
+            });
+        });
+      }
+    }
+  }
+
+  handleEdit(fieldId: string) {
+    this.router.navigate(['chooseClub/fields/editField', fieldId]);
   }
 }

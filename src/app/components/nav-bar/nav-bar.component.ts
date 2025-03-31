@@ -38,12 +38,12 @@ export class NavBarComponent {
     {
       icon:'book',
       label:'Team',
-      route:'team'
+      route:'/chooseClubforTeam'
     },
     {
       icon:'event',
       label:'User',
-      route:'user'
+      route:'users/createUser'
     },
     {
       icon:'help',

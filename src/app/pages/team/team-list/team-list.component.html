@@ -1,0 +1,15 @@
+<div class="button-container">
+  <span class="create-button-row">
+    <button mat-flat-button (click)="navigateToCreateTeam()">Create</button>
+  </span>
+  <span class="delete-button-row">
+    <button mat-flat-button (click)="deleteTeams()">Delete</button>
+  </span>
+</div>
+
+<app-table
+  [columns]="teamColumns"
+  [data]="teamData()"
+  (selectedRows)="handleSelectedRows($event)"
+  (editClicked)="handleEdit($event)"
+></app-table>

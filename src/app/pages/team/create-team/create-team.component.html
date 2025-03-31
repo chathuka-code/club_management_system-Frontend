@@ -1,0 +1,24 @@
+<div class="form-container">
+  <mat-form-field appearance="outline">
+    <mat-label>Team Name</mat-label>
+    <input
+      matInput
+      placeholder="Enter Team Name"
+      [(ngModel)]="team.teamName"
+      required
+    />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Sport Category</mat-label>
+    <input
+      matInput
+      placeholder="Enter Sport Category"
+      [(ngModel)]="team.sportCategory"
+    />
+  </mat-form-field>
+
+  <div class="example-button-row">
+    <button mat-flat-button (click)="createTeam()">Submit</button>
+  </div>
+</div>

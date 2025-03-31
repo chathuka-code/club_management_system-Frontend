@@ -1,0 +1,93 @@
+<h2 mat-dialog-title>Select User Roles</h2>
+<mat-dialog-content>
+  <div class="dialog-content">
+    <div class="form-section">
+      <div class="form-row">
+        <label>Assign Club Admin:</label>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Select the Club</mat-label>
+          <mat-select>
+            <mat-option
+              *ngFor="let club of clubNames"
+              [value]="club"
+              (click)="forClubAdmin = club.id"
+              >{{ club.name }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+        <div class="assign-button-row">
+          <button mat-flat-button>Assign</button>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Assign Field Admin:</label>
+        <div class="form-group">
+          <mat-form-field appearance="outline" class="form-field-spacing">
+            <mat-label>Select the Club</mat-label>
+            <mat-select>
+              <mat-option
+                *ngFor="let club of clubNames"
+                [value]="club"
+                (click)="selectedClub = club.id"
+                >{{ club.name }}</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field-spacing">
+            <mat-label>Select a Field</mat-label>
+            <mat-select>
+              <mat-option
+                *ngFor="let field of fields"
+                [value]="field.id"
+                (click)="selectedField = field.id"
+                >{{ field.name }}</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="assign-button-row">
+          <button mat-flat-button>Assign</button>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Assign Team Manager:</label>
+        <div class="form-group">
+          <mat-form-field appearance="outline" class="form-field-spacing">
+            <mat-label>Select the Club</mat-label>
+            <mat-select>
+              <mat-option
+                *ngFor="let club of clubNames"
+                [value]="club"
+                (click)="forTeamManager = club.id"
+                >{{ club.name }}</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field-spacing">
+            <mat-label>Select a Team</mat-label>
+            <mat-select>
+                <mat-option
+                  *ngFor="let team of teams"
+                  [value]="team.id"
+                  (click)="selectedTeam = team.id"
+                  >{{ team.name }}</mat-option
+                >
+              </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="assign-button-row">
+          <button mat-flat-button>Assign</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSave()">Save</button>
+</mat-dialog-actions>

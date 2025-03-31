@@ -2,9 +2,10 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar'; // For user feedback
 import { Router } from '@angular/router';
-import { map, Observable } from 'rxjs';
+import { catchError, forkJoin, map, Observable, tap, throwError } from 'rxjs';
 
 export interface Field {
+  [x: string]: any;
   fieldName: string;
   address: string;
   facilitiesInfo: string;
@@ -72,10 +73,81 @@ export class FieldService {
 
   //for fetching fields
   getAllFields(clubId: string): Observable<Field[]> {
-    return this.http.get<Field[]>(`http://localhost:3000/fields?clubId=${clubId}`).pipe(
-      map((response) => {
-        console.log('Fields:', response);
-        return response;
+    return this.http
+      .get<Field[]>(
+        `http://localhost:3000/fields?clubId=${clubId}&isDeleted=false`
+      )
+      .pipe(
+        map((response) => {
+          console.log('Fields:', response);
+          return response;
+        })
+      );
+  }
+
+  //for soft deleting a field
+  deleteFields(fieldIds: string[]): Observable<void> {
+    // Convert array of IDs to array of observables
+    const deletionObservables = fieldIds.map((id) =>
+      this.http.patch(`${this.apiUrl}/${id}`, { isDeleted: true }).pipe(
+        tap(() => {
+          console.log(`Field with ID ${id} marked as deleted.`);
+          this.snackBar.open(
+            `Field with ID ${id} deleted successfully!`,
+            'Close',
+            { duration: 3000 }
+          );
+        }),
+        catchError((err) => {
+          console.error(`Error deleting field with ID ${id}:`, err);
+          this.snackBar.open(`Failed to delete field with ID ${id}`, 'Close', {
+            duration: 3000,
+            panelClass: ['error-snackbar'],
+          });
+          return throwError(() => err); // Re-throw the error
+        })
+      )
+    );
+
+    // Execute all deletions in parallel and return a single observable
+    return forkJoin(deletionObservables).pipe(
+      map(() => undefined) // Convert to Observable<void>
+    );
+  }
+
+  //for updating a field
+  updateField(fieldId: string, field: Field): Observable<Field> {
+    return this.http.put<Field>(`${this.apiUrl}/${fieldId}`, field).pipe(
+      tap(() => {
+        console.log('Field updated successfully!');
+        this.snackBar.open('Field updated successfully!', 'Close', {
+          duration: 3000,
+        });
+      }),
+      catchError((err) => {
+        console.error('Error updating field:', err);
+        this.snackBar.open('Failed to update field', 'Close', {
+          duration: 3000,
+          panelClass: ['error-snackbar'],
+        });
+        return throwError(() => err); // Re-throw the error
+      })
+    );
+  }
+
+  //for getting a field by ID
+  getFieldById(fieldId: string): Observable<Field> {
+    return this.http.get<Field>(`${this.apiUrl}/${fieldId}`).pipe(
+      tap((field) => {
+        console.log('Fetched field:', field);
+      }),
+      catchError((err) => {
+        console.error('Error fetching field:', err);
+        this.snackBar.open('Failed to fetch field', 'Close', {
+          duration: 3000,
+          panelClass: ['error-snackbar'],
+        });
+        return throwError(() => err); // Re-throw the error
       })
     );
   }

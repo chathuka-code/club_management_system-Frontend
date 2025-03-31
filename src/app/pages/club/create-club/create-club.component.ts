@@ -27,7 +27,7 @@ export class CreateClubComponent implements OnInit {
 
   private clubService = inject(ClubService);
 
-  apiUrl = 'http://localhost:3000/clubs'; // Fixed variable name (Url → apiUrl)
+  apiUrl = 'http://localhost:3000/clubs'; 
 
   club: Club = {
     clubName: '',

@@ -40,7 +40,7 @@ export class ClubCardComponent implements OnInit {
     this.http.get<Club[]>('http://localhost:3000/clubs').subscribe({
       next: (response) => {
         console.log('Clubs:', response);
-        this.userData = response;
+        this.userData = response.filter(club => !club.isDeleted);
       },
     });
   }

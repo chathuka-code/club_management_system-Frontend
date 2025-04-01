@@ -1,4 +1,4 @@
-import { Component, inject, Inject, OnInit } from '@angular/core';
+import { Component, inject, Inject, OnInit, signal } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogModule,
@@ -6,6 +6,7 @@ import {
 } from '@angular/material/dialog';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -24,6 +25,7 @@ import { CommonModule } from '@angular/common';
     MatSelectModule,
     MatOptionModule,
     MatButtonModule,
+    MatTabsModule,
     CommonModule,
   ],
   templateUrl: './user-roles-dialog.component.html',
@@ -39,6 +41,17 @@ export class UserRolesDialogComponent implements OnInit {
   clubNames: { name: string; id: string }[] = [];
   fields: { name: string; id: string }[] = [];
   teams: { name: string; id: string }[] = [];
+
+  //to store assigned roles
+  assignedClubAdmins = signal<
+    { userId: string; clubId: string; clubName: string }[]
+  >([]);
+  assignedTeamManagers = signal<
+    { userId: string; teamId: string; teamName: string }[]
+  >([]);
+  assignedFieldAdmins = signal<
+    { userId: string; fieldId: string; fieldName: string }[]
+  >([]);
 
   private _selectedClub: string = '';
   get selectedClub(): string {
@@ -62,11 +75,20 @@ export class UserRolesDialogComponent implements OnInit {
     }
   }
 
-  selectedField: string = '';
+  selectedField: { fieldId: string; fieldName: string } = {
+    fieldId: '',
+    fieldName: '',
+  };
 
-  selectedTeam: string = '';
+  selectedTeam: { teamId: string; teamName: string } = {
+    teamId: '',
+    teamName: '',
+  };
 
-  forClubAdmin: string = '';
+  forClubAdmin: { clubId: string; clubName: string } = {
+    clubId: '',
+    clubName: '',
+  };
 
   //to get fields
   onClubSelected(clubId: string): void {
@@ -114,6 +136,46 @@ export class UserRolesDialogComponent implements OnInit {
   }
 
   onSave(): void {
-    this.dialogRef.close(this.selectedRoles);
+    this.dialogRef.close({
+      clubAdmins: this.assignedClubAdmins(),
+      teamManagers: this.assignedTeamManagers(),
+      fieldAdmins: this.assignedFieldAdmins()
+    });
+  }
+
+  //assign button of club admin
+  assignClubAdmin(): void {
+    this.assignedClubAdmins.set([
+      ...this.assignedClubAdmins(),
+      {
+        userId: '',
+        clubId: this.forClubAdmin.clubId,
+        clubName: this.forClubAdmin.clubName,
+      },
+    ]);
+  }
+
+  //assign button of team manager
+  assignTeamManager(): void {
+    this.assignedTeamManagers.set([
+      ...this.assignedTeamManagers(),
+      {
+        userId: '',
+        teamId: this.selectedTeam.teamId,
+        teamName: this.selectedTeam.teamName,
+      },
+    ]);
+  }
+
+  //assign button of field admin
+  assignFieldAdmin(): void {
+    this.assignedFieldAdmins.set([
+      ...this.assignedFieldAdmins(),
+      {
+        userId: '',
+        fieldId: this.selectedField.fieldId,
+        fieldName: this.selectedField.fieldName,
+      },
+    ]);
   }
 }

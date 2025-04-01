@@ -10,7 +10,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { UserRolesDialogComponent } from '../user-roles-dialog/user-roles-dialog.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
-
 @Component({
   selector: 'app-create-user',
   standalone: true,
@@ -21,7 +20,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatButtonModule,
     MatSelectModule,
     CommonModule,
-    MatCheckboxModule
+    MatCheckboxModule,
   ],
   templateUrl: './create-user.component.html',
   styleUrls: ['./create-user.component.css'],
@@ -39,6 +38,10 @@ export class CreateUserComponent {
     isDeleted: false,
   };
 
+  clubAdmins: any[] = []; // Array to hold club admins
+  teamManagers: any[] = []; // Array to hold team managers
+  fieldAdmins: any[] = []; // Array to hold field admins
+
   openRolesDialog(): void {
     const dialogRef = this.dialog.open(UserRolesDialogComponent, {
       data: {
@@ -48,13 +51,34 @@ export class CreateUserComponent {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        console.log('Selected roles:', result);
+        // Check if result exists (user clicked Save)
+        console.log('Dialog closed with data:', result);
+
+        // Access the specific data properties
+        this.clubAdmins = result.clubAdmins;
+        this.teamManagers = result.teamManagers;
+        this.fieldAdmins = result.fieldAdmins;
+
+        // Do something with the data
+        this.processRoleAssignments(this.clubAdmins, this.teamManagers, this.fieldAdmins);
+      } else {
+        console.log('Dialog was canceled');
       }
     });
   }
 
+  private processRoleAssignments(
+    clubAdmins: any[],
+    teamManagers: any[],
+    fieldAdmins: any[]
+  ) {
+    console.log('Received club admins:', clubAdmins);
+    console.log('Received team managers:', teamManagers);
+    console.log('Received field admins:', fieldAdmins);
+  }
+
   createUser() {
     console.log('User Data:', this.user);
-    this.userService.createUser(this.user);
+    this.userService.createUser(this.user, this.clubAdmins, this.teamManagers, this.fieldAdmins);
   }
 }

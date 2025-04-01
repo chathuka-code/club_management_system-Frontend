@@ -10,7 +10,6 @@ import { MatButtonModule } from '@angular/material/button';
   selector: 'app-nav-bar',
   standalone: true,
   imports: [
-    RouterOutlet,
     MatToolbarModule,
     MatSidenavModule,
     MatIconModule,
@@ -24,31 +23,31 @@ import { MatButtonModule } from '@angular/material/button';
 export class NavBarComponent {
   title = 'angular-sidenav';
 
-  menuItems: any[] =[
+  menuItems: any[] = [
     {
-      icon:'home',
-      label:'Club',
-      route:'/clubs'
+      icon: 'home',
+      label: 'Club',
+      route: '/clubs',
     },
     {
-      icon:'handshake',
-      label:'Field',
-      route:'/chooseClub'
+      icon: 'handshake',
+      label: 'Field',
+      route: '/chooseClub',
     },
     {
-      icon:'book',
-      label:'Team',
-      route:'/chooseClubforTeam'
+      icon: 'book',
+      label: 'Team',
+      route: '/chooseClubforTeam',
     },
     {
-      icon:'event',
-      label:'User',
-      route:'users/createUser'
+      icon: 'event',
+      label: 'User',
+      route: 'users',
     },
     {
-      icon:'help',
-      label:'Booking',
-      route:'booking'
-    }
+      icon: 'help',
+      label: 'Booking',
+      route: 'booking',
+    },
   ];
 }

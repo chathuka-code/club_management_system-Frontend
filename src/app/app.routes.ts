@@ -11,6 +11,7 @@ import { EditClubComponent } from './pages/club/edit-club/edit-club.component';
 import { EditFieldComponent } from './pages/field/edit-field/edit-field.component';
 import { EditTeamComponent } from './pages/team/edit-team/edit-team.component';
 import { CreateUserComponent } from './pages/user/create-user/create-user.component';
+import { UserListComponent } from './pages/user/user-list/user-list.component';
 
 export const routes: Routes = [
   { path: 'clubs/createClub', component: CreateClubComponent },
@@ -40,4 +41,5 @@ export const routes: Routes = [
 
   //user routes
   {path: 'users/createUser', component: CreateUserComponent},
+  {path: 'users', component: UserListComponent},
 ];

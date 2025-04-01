@@ -1,0 +1,15 @@
+<div class="button-container">
+  <span class="create-button-row">
+    <button mat-flat-button (click)="navigateToCreateUser()">Create</button>
+  </span>
+  <span class="delete-button-row">
+    <button mat-flat-button >Delete</button>
+  </span>
+</div>
+
+<app-table
+  [columns]="userColumns"
+  [data]="userData()"
+  (selectedRows)="handleSelectedRows($event)"
+  (editClicked)="handleEdit($event)"
+></app-table>

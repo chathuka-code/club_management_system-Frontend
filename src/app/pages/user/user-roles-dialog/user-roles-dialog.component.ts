@@ -10,6 +10,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { ClubService } from '../../club/club.service';
 import { FieldService } from '../../field/field.service';
 import { TeamService } from '../../team/team.service';
@@ -27,6 +28,7 @@ import { CommonModule } from '@angular/common';
     MatButtonModule,
     MatTabsModule,
     CommonModule,
+    MatIconModule
   ],
   templateUrl: './user-roles-dialog.component.html',
   styleUrls: ['./user-roles-dialog.component.css'],
@@ -129,6 +131,26 @@ export class UserRolesDialogComponent implements OnInit {
       }));
       console.log('Clubs:', this.clubNames);
     });
+  }
+
+  //to remove club admin
+  removeClubAdmin(adminToRemove: any): void {
+    this.assignedClubAdmins.update((admins) =>
+      admins.filter((admin) => admin.clubId !== adminToRemove.clubId)
+    );
+  }
+
+  removeTeamManager(managerToRemove: any): void {
+    this.assignedTeamManagers.update((managers) =>
+      managers.filter((manager) => manager.teamId !== managerToRemove.teamId)
+    );
+  }
+
+  //to remove field admin
+  removeFieldAdmin(adminToRemove: any): void {
+    this.assignedFieldAdmins.update((admins) =>
+      admins.filter((admin) => admin.fieldId !== adminToRemove.fieldId)
+    );
   }
 
   onCancel(): void {

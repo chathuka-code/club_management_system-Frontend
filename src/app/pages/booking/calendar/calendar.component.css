@@ -1,0 +1,98 @@
+.create-button-row button {
+  background-color: #008000 !important; /* Green background */
+  color: white !important; /* White text for better contrast */
+}
+
+.delete-button-row button {
+  background-color: #ca0e0e !important; /* Green background */
+  color: white !important; /* White text for better contrast */
+}
+
+.button-container {
+  display: flex;
+  gap: 12px; /* Space between buttons */
+  align-items: center; /* Aligns buttons vertically */
+  margin-left: 950px;
+}
+
+.create-button-row,
+.delete-button-row {
+  display: inline-block; /* Ensures both elements behave like inline elements */
+}
+
+/* styles.css */
+.custom-calendar {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin: 40px;
+  background: #ffffff;
+}
+
+.custom-calendar .fc-header-toolbar {
+  padding: 1.5rem;
+  margin-bottom: 0;
+  background: #f8f9fa;
+  border-radius: 12px 12px 0 0;
+}
+
+.custom-calendar .fc-header-toolbar .fc-toolbar-title {
+  font-size: 1.5rem;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.custom-calendar .fc-header-toolbar .fc-button {
+  background: #4a90e2 !important;
+  border: none !important;
+  color: white !important;
+  border-radius: 8px !important;
+  padding: 8px 16px !important;
+  transition: all 0.2s ease;
+}
+
+.custom-calendar .fc-header-toolbar .fc-button:hover {
+  background: #357abd !important;
+  transform: translateY(-1px);
+}
+
+.custom-calendar .fc-header-toolbar .fc-button:active {
+  transform: translateY(0);
+}
+
+.custom-calendar .fc-view-harness {
+  border-radius: 0 0 12px 12px;
+  min-height: 600px;
+}
+
+.custom-calendar .fc-col-header-cell {
+  background: #4a90e2;
+  color: white;
+  padding: 12px 0;
+  font-weight: 500;
+}
+
+.custom-calendar .fc-event {
+  background: #4a90e2;
+  border: none !important;
+  border-radius: 6px;
+  padding: 4px 8px;
+  margin: 2px;
+  font-size: 0.9em;
+}
+
+.custom-calendar .fc-event:hover {
+  background: #357abd;
+}
+
+.custom-calendar .fc-day-today {
+  background: #e3f2fd !important;
+}
+
+.custom-calendar .fc-timegrid-slot {
+  height: 50px !important;
+  border-color: #f0f0f0 !important;
+}
+
+

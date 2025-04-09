@@ -9,13 +9,9 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [
-    TableComponent,
-    MatButtonModule,
-    CommonModule
-  ],
+  imports: [TableComponent, MatButtonModule, CommonModule],
   templateUrl: './user-list.component.html',
-  styleUrl: './user-list.component.css'
+  styleUrl: './user-list.component.css',
 })
 export class UserListComponent implements OnInit {
   private router = inject(Router);
@@ -30,7 +26,7 @@ export class UserListComponent implements OnInit {
   }
   userColumns: TableColumn[] = [
     { key: 'firstName', label: 'First Name' },
-    {key: 'lastName', label: 'Last Name'},
+    { key: 'lastName', label: 'Last Name' },
     { key: 'email', label: 'Email' },
     { key: 'isSuperAdmin', label: 'Is Super Admin' },
   ];
@@ -43,9 +39,18 @@ export class UserListComponent implements OnInit {
 
   handleSelectedRows(selectedRows: any[]) {
     this.selectedRowIds = selectedRows.map((row) => row.id);
+    console.log('Selected Row IDs:', this.selectedRowIds);
   }
 
-  handleEdit(teamId: string) {
-    this.router.navigate(['chooseClubforTeam/teams/editTeam', teamId]);
+  handleEdit(userId: string) {
+    this.router.navigate(['users/editUser', userId]);
+  }
+
+  deleteUsers() {
+    this.userService.deleteUser(this.selectedRowIds).subscribe(() => {
+      this.userService.getAllUsers().subscribe((users: User[]) => {
+        this.userData.set(users);
+      });
+    });
   }
 }

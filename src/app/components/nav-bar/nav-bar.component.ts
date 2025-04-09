@@ -30,24 +30,24 @@ export class NavBarComponent {
       route: '/clubs',
     },
     {
-      icon: 'handshake',
+      icon: 'golf_course',
       label: 'Field',
       route: '/chooseClub',
     },
     {
-      icon: 'book',
+      icon: 'group',
       label: 'Team',
       route: '/chooseClubforTeam',
     },
     {
-      icon: 'event',
+      icon: 'person',
       label: 'User',
       route: 'users',
     },
     {
-      icon: 'help',
+      icon: 'booking',
       label: 'Booking',
-      route: 'booking',
+      route: '/chooseClubforBooking',
     },
   ];
 }

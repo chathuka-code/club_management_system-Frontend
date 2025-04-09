@@ -1,0 +1,59 @@
+<div class="form-container">
+    <mat-form-field appearance="outline">
+      <mat-label>First Name</mat-label>
+      <input
+        matInput
+        placeholder="Enter First Name"
+        [(ngModel)]="user.firstName"
+        required
+      />
+    </mat-form-field>
+  
+    <mat-form-field appearance="outline">
+      <mat-label>Last Name</mat-label>
+      <input
+        matInput
+        placeholder="Enter Last Name"
+        [(ngModel)]="user.lastName"
+        required
+      />
+    </mat-form-field>
+  
+    <mat-form-field appearance="outline">
+      <mat-label>E-mail</mat-label>
+      <input
+        matInput
+        placeholder="Enter E-mail"
+        [(ngModel)]="user.email"
+        required
+      />
+    </mat-form-field>
+  
+    <mat-form-field appearance="outline">
+      <mat-label>Password</mat-label>
+      <input
+        matInput
+        placeholder="Enter Password"
+        [(ngModel)]="user.password"
+        required
+        type="password"
+      />
+    </mat-form-field>
+  
+    <div
+      class="add-roles-button-row"
+      style="display: flex; align-items: center; gap: 10px"
+    >
+      <button mat-flat-button (click)="openRolesDialog()" style="width: 200px">
+        + Add User Roles
+      </button>
+      <mat-checkbox class="checkbox" [(ngModel)]="user.isSuperAdmin"
+        >Make a Super Admin</mat-checkbox
+      >
+    </div>
+  
+    <div class="example-button-row">
+      <button mat-flat-button (click)="saveUser()">Save</button>
+    </div>
+  </div>
+  

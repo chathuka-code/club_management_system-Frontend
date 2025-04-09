@@ -123,6 +123,13 @@
             class="role-row"
             *ngFor="let admin of assignedClubAdmins(); let i = index"
           >
+          <button
+              mat-icon-button
+              color="warn"
+              (click)="removeClubAdmin(admin)"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
             <span class="role-details"> Club Name: {{ admin.clubName }} </span>
           </div>
         </div>
@@ -144,6 +151,13 @@
             class="role-row"
             *ngFor="let admin of assignedFieldAdmins(); let i = index"
           >
+          <button
+              mat-icon-button
+              color="warn"
+              (click)="removeFieldAdmin(admin)"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
             <span class="role-details"> Field Name: {{ admin.fieldName }} </span>
           </div>
         </div>
@@ -165,6 +179,13 @@
             class="role-row"
             *ngFor="let admin of assignedTeamManagers(); let i = index"
           >
+          <button
+              mat-icon-button
+              color="warn"
+              (click)="removeTeamManager(admin)"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
             <span class="role-details"> Team Name: {{ admin.teamName }} </span>
           </div>
         </div>

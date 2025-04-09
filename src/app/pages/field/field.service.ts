@@ -18,7 +18,11 @@ export interface Field {
 }
 
 export interface FieldPart {
+  [x: string]: any;
+  byteCode: number;
   fieldPartName: string;
+  fieldId: string;
+  isSelected?: boolean;
 }
 
 @Injectable({
@@ -41,11 +45,20 @@ export class FieldService {
         this.snackBar.open('Field created successfully!', 'Close', {
           duration: 3000,
         });
-        const fieldParts = ['Section 1', 'Section 2', 'Section 3', 'Section 4'];
+        const fieldParts = [
+          { partName: '1', byteCode: 0b0001 },
+          { partName: '2', byteCode: 0b0010 },
+          { partName: '3', byteCode: 0b0100 },
+          { partName: '4', byteCode: 0b1000 },
+          { partName: '1-2', byteCode: 0b0011 },
+          { partName: '3-4', byteCode: 0b1100 },
+          { partName: '1-4', byteCode: 0b1111 },
+        ]; // Example field parts
         fieldParts.forEach((fieldPartName) => {
           this.http
             .post('http://localhost:3000/fieldParts', {
-              fieldPartName,
+              fieldPartName: fieldPartName.partName,
+              byteCode: fieldPartName.byteCode,
               fieldId: response.id,
             })
             .subscribe({
@@ -144,6 +157,43 @@ export class FieldService {
       catchError((err) => {
         console.error('Error fetching field:', err);
         this.snackBar.open('Failed to fetch field', 'Close', {
+          duration: 3000,
+          panelClass: ['error-snackbar'],
+        });
+        return throwError(() => err); // Re-throw the error
+      })
+    );
+  }
+
+  //for getting field parts by field ID
+  getFieldPartsByFieldId(fieldId: string): Observable<FieldPart[]> {
+    return this.http
+      .get<FieldPart[]>(`${this.fieldPartApiUrl}?fieldId=${fieldId}`)
+      .pipe(
+        tap((fieldParts) => {
+          console.log('Fetched field parts:', fieldParts);
+        }),
+        catchError((err) => {
+          console.error('Error fetching field parts:', err);
+          this.snackBar.open('Failed to fetch field parts', 'Close', {
+            duration: 3000,
+            panelClass: ['error-snackbar'],
+          });
+          return throwError(() => err); // Re-throw the error
+        })
+      );
+  }
+
+  //getting field parts by IDs
+  getFieldPartsByIds(fieldPartIds: any[]): Observable<number[]> {
+    const requests = fieldPartIds.map((id) =>
+      this.http.get<FieldPart>(`${this.fieldPartApiUrl}/${id}`)
+    );
+    return forkJoin(requests).pipe(
+      map((responses) => responses.map((response) => response.byteCode)),
+      catchError((err) => {
+        console.error('Error fetching field parts:', err);
+        this.snackBar.open('Failed to fetch field parts', 'Close', {
           duration: 3000,
           panelClass: ['error-snackbar'],
         });

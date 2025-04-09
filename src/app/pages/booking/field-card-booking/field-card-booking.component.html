@@ -1,0 +1,10 @@
+<div class="club-container">
+  <h3>Choose a Field to continue</h3>
+  <div class="club-grid">
+    <app-field-card
+      *ngFor="let field of userData"
+      [field]="field"
+      (cardClick)="onCardClick(field['id'])"
+    ></app-field-card>
+  </div>
+</div>

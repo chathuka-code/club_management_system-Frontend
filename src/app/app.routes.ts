@@ -12,6 +12,11 @@ import { EditFieldComponent } from './pages/field/edit-field/edit-field.componen
 import { EditTeamComponent } from './pages/team/edit-team/edit-team.component';
 import { CreateUserComponent } from './pages/user/create-user/create-user.component';
 import { UserListComponent } from './pages/user/user-list/user-list.component';
+import { EditUserComponent } from './pages/user/edit-user/edit-user.component';
+import { ClubCardBookingComponent } from './pages/booking/club-card-booking/club-card-booking.component';
+import { FieldCardBookingComponent } from './pages/booking/field-card-booking/field-card-booking.component';
+import { CalendarComponent } from './pages/booking/calendar/calendar.component';
+import { CreateBookingComponent } from './pages/booking/create-booking/create-booking.component';
 
 export const routes: Routes = [
   { path: 'clubs/createClub', component: CreateClubComponent },
@@ -40,6 +45,22 @@ export const routes: Routes = [
   },
 
   //user routes
-  {path: 'users/createUser', component: CreateUserComponent},
-  {path: 'users', component: UserListComponent},
+  { path: 'users/createUser', component: CreateUserComponent },
+  { path: 'users', component: UserListComponent },
+  { path: 'users/editUser/:userId', component: EditUserComponent },
+
+  //booking routes
+  { path: 'chooseClubforBooking', component: ClubCardBookingComponent },
+  {
+    path: 'chooseClubforBooking/chooseFieldforBooking/:clubId',
+    component: FieldCardBookingComponent,
+  },
+  {
+    path: 'chooseClubforBooking/chooseFieldforBooking/calendar/:fieldId',
+    component: CalendarComponent,
+  },
+  {
+    path: 'chooseClubforBooking/chooseFieldforBooking/calendar/createBooking/:fieldId',
+    component: CreateBookingComponent,
+  },
 ];

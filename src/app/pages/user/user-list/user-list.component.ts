@@ -5,6 +5,8 @@ import { TableColumn } from '../../../components/table/table.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { UserService, User } from '../user.service';
 import { CommonModule } from '@angular/common';
+import { ConfirmationDialogComponent } from '../../../components/confirmation-dialog/confirmation-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-user-list',
@@ -16,6 +18,7 @@ import { CommonModule } from '@angular/common';
 export class UserListComponent implements OnInit {
   private router = inject(Router);
   private userService = inject(UserService);
+  private dialog = inject(MatDialog);
   userData = signal<User[]>([]);
   selectedRowIds: string[] = [];
 
@@ -47,10 +50,24 @@ export class UserListComponent implements OnInit {
   }
 
   deleteUsers() {
-    this.userService.deleteUser(this.selectedRowIds).subscribe(() => {
-      this.userService.getAllUsers().subscribe((users: User[]) => {
-        this.userData.set(users);
-      });
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '350px',
+      data: {
+        title: 'Confirm Delete',
+        message: 'Are you sure you want to delete this booking?',
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.userService.deleteUser(this.selectedRowIds).subscribe(() => {
+          this.userService.getAllUsers().subscribe((users: User[]) => {
+            this.userData.set(users);
+          });
+        });
+      }
     });
   }
 }

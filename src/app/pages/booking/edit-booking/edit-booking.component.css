@@ -1,0 +1,126 @@
+/* Center the form and set max width */
+.form-container {
+  max-width: 600px;
+  margin: auto;
+  margin-top: 20px;
+  padding: 20px;
+}
+
+/* Style form fields */
+mat-form-field {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+/* Add some spacing */
+.mat-mdc-text-field-wrapper {
+  padding: 10px;
+}
+
+.example-button-row {
+  display: flex;
+  justify-content: flex-end; /* Align button to the right */
+}
+
+.example-button-row button {
+  background-color: #008000 !important; /* Green background */
+  color: white !important; /* White text for better contrast */
+}
+
+/* Improve placeholder visibility */
+::placeholder {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.fields-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.field-section {
+  background: #2e8b57;
+  border-radius: 8px;
+  padding: 1rem;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+  height: 150px;
+}
+
+.field-vertical {
+  display: flex;
+  flex: 1;
+  gap: 0.5rem;
+}
+
+.vertical-column {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 0.5rem;
+}
+
+.field-part {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0.5rem;
+  flex: 1;
+}
+
+.field-part.vertical-tall {
+  min-height: calc(50% - 0.25rem);
+}
+
+.field-part.full {
+  height: 100%;
+  min-height: 100px;
+  justify-content: center;
+}
+
+.field-part:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.field-part.selected {
+  background: rgba(46, 125, 50, 0.8);
+  border-color: #ffd700;
+  box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+
+.byte-code {
+  font-size: 0.7rem;
+  font-family: monospace;
+  margin-top: 0.3rem;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.8rem;
+}
+
+.delete-button-row button {
+  background-color: #ca0e0e !important; /* Green background */
+  color: white !important; /* White text for better contrast */
+}
+
+.button-container {
+  display: flex;
+  gap: 12px; /* Space between buttons */
+  align-items: center; /* Aligns buttons vertically */
+  margin-left: 1100px;
+}
+
+.create-button-row,
+.delete-button-row {
+  display: inline-block; /* Ensures both elements behave like inline elements */
+  
+}

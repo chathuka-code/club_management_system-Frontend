@@ -78,4 +78,57 @@ export class BookingService {
       })
     );
   }
+
+  //for getting booking by bookingId
+  getBookingById(bookingId: string): Observable<Booking> {
+    return this.http.get<Booking>(`${this.apiUrl}/${bookingId}`).pipe(
+      tap((response) => {
+        console.log('Booking details:', response);
+      }),
+      catchError((err) => {
+        console.error('Error fetching booking:', err);
+        return throwError(() => err);
+      })
+    );
+  }
+
+  //for updating a booking
+  updateBooking(bookingId: string, booking: Booking): Observable<Booking> {
+    return this.http.patch<Booking>(`${this.apiUrl}/${bookingId}`, booking).pipe(
+      tap((response) => {
+        console.log('Booking updated successfully:', response);
+        this.snackBar.open('Booking updated successfully!', 'Close', {
+          duration: 3000,
+        });
+      }),
+      catchError((err) => {
+        console.error('Error updating booking:', err);
+        this.snackBar.open('Failed to update booking', 'Close', {
+          duration: 3000,
+          panelClass: ['error-snackbar'],
+        });
+        return throwError(() => err);
+      })
+    );
+  }
+
+  //for deleting a booking
+  deleteBooking(bookingId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${bookingId}`).pipe(
+      tap(() => {
+        console.log('Booking deleted successfully');
+        this.snackBar.open('Booking deleted successfully!', 'Close', {
+          duration: 3000,
+        });
+      }),
+      catchError((err) => {
+        console.error('Error deleting booking:', err);
+        this.snackBar.open('Failed to delete booking', 'Close', {
+          duration: 3000,
+          panelClass: ['error-snackbar'],
+        });
+        return throwError(() => err);
+      })
+    );
+  }
 }

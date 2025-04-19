@@ -4,6 +4,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { TableColumn } from '../../../components/table/table.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FieldService, Field } from '../field.service';
+import { ConfirmationDialogComponent } from '../../../components/confirmation-dialog/confirmation-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-field-list',
@@ -17,6 +19,7 @@ export class FieldListComponent implements OnInit {
 
   private route = inject(ActivatedRoute);
   private fieldService = inject(FieldService);
+  private dialog = inject(MatDialog);
   clubId: string | null = null;
   fieldData = signal<Field[]>([]);
   selectedRowIds: string[] = [];
@@ -56,17 +59,29 @@ export class FieldListComponent implements OnInit {
   }
 
   deleteFields() {
-    if (this.clubId) {
-      if (this.clubId) {
-        this.fieldService.deleteFields(this.selectedRowIds).subscribe(() => {
-          this.fieldService
-            .getAllFields(this.clubId!)
-            .subscribe((fields: Field[]) => {
-              this.fieldData.set(fields);
-            });
-        });
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '350px',
+      data: {
+        title: 'Confirm Delete',
+        message: 'Are you sure you want to delete this booking?',
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        if (this.clubId) {
+          this.fieldService.deleteFields(this.selectedRowIds).subscribe(() => {
+            this.fieldService
+              .getAllFields(this.clubId!)
+              .subscribe((fields: Field[]) => {
+                this.fieldData.set(fields);
+              });
+          });
+        }
       }
-    }
+    });
   }
 
   handleEdit(fieldId: string) {

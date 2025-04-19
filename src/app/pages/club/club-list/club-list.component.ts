@@ -4,6 +4,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { TableColumn } from '../../../components/table/table.component';
 import { ClubService, Club } from '../club.service';
+import { ConfirmationDialogComponent } from '../../../components/confirmation-dialog/confirmation-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-club-list',
@@ -14,6 +16,7 @@ import { ClubService, Club } from '../club.service';
 })
 export class ClubListComponent implements OnInit {
   constructor(private router: Router) {}
+  private dialog = inject(MatDialog);
 
   private clubService = inject(ClubService);
   userData = signal<Club[]>([]);
@@ -42,10 +45,24 @@ export class ClubListComponent implements OnInit {
   }
 
   deleteClubs() {
-    this.clubService.deleteClub(this.selectedRowIds).subscribe(() => {
-      this.clubService.getAllClubs().subscribe((clubs: Club[]) => {
-        this.userData.set(clubs);
-      });
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '350px',
+      data: {
+        title: 'Confirm Delete',
+        message: 'Are you sure you want to delete this booking?',
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.clubService.deleteClub(this.selectedRowIds).subscribe(() => {
+          this.clubService.getAllClubs().subscribe((clubs: Club[]) => {
+            this.userData.set(clubs);
+          });
+        });
+      }
     });
   }
 

@@ -17,6 +17,7 @@ import { ClubCardBookingComponent } from './pages/booking/club-card-booking/club
 import { FieldCardBookingComponent } from './pages/booking/field-card-booking/field-card-booking.component';
 import { CalendarComponent } from './pages/booking/calendar/calendar.component';
 import { CreateBookingComponent } from './pages/booking/create-booking/create-booking.component';
+import { EditBookingComponent } from './pages/booking/edit-booking/edit-booking.component';
 
 export const routes: Routes = [
   { path: 'clubs/createClub', component: CreateClubComponent },
@@ -62,5 +63,9 @@ export const routes: Routes = [
   {
     path: 'chooseClubforBooking/chooseFieldforBooking/calendar/createBooking/:fieldId',
     component: CreateBookingComponent,
+  },
+  {
+    path: 'chooseClubforBooking/chooseFieldforBooking/calendar/editBooking/:bookingId',
+    component: EditBookingComponent,
   },
 ];

@@ -41,6 +41,10 @@ export class CreateTeamComponent implements OnInit {
   };
 
   createTeam() {
+    if (!this.team.teamName || !this.team.sportCategory || !this.team.clubId) {
+      alert('Team name, sport category, and club ID are required!');
+      return;
+    }
     this.teamService.createTeam(this.team);
   }
 }

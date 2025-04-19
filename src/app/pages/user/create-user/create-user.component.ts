@@ -29,6 +29,9 @@ export class CreateUserComponent {
   private userService = inject(UserService);
   private dialog = inject(MatDialog);
 
+  isEmailValid: boolean = false; // Flag to check if email is valid
+  isPasswordValid: boolean = false; // Flag to check if password is valid
+
   user: User = {
     firstName: '',
     lastName: '',
@@ -60,7 +63,11 @@ export class CreateUserComponent {
         this.fieldAdmins = result.fieldAdmins;
 
         // Do something with the data
-        this.processRoleAssignments(this.clubAdmins, this.teamManagers, this.fieldAdmins);
+        this.processRoleAssignments(
+          this.clubAdmins,
+          this.teamManagers,
+          this.fieldAdmins
+        );
       } else {
         console.log('Dialog was canceled');
       }
@@ -78,7 +85,29 @@ export class CreateUserComponent {
   }
 
   createUser() {
-    console.log('User Data:', this.user);
-    this.userService.createUser(this.user, this.clubAdmins, this.teamManagers, this.fieldAdmins);
+    if (
+      !this.user.firstName ||
+      !this.user.lastName ||
+      !this.user.email ||
+      !this.user.password
+    ) {
+      alert('First name, last name, and email are required!');
+      return;
+    }
+    if (!this.isEmailValid) {
+      alert('Please enter a valid email address!');
+      return;
+    }
+    if (!this.isPasswordValid) {
+      alert('Please enter a valid password!');
+      return;
+    }
+
+    this.userService.createUser(
+      this.user,
+      this.clubAdmins,
+      this.teamManagers,
+      this.fieldAdmins
+    );
   }
 }

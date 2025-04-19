@@ -46,6 +46,21 @@ export class CreateFieldComponent implements OnInit {
   };
 
   createField() {
+    if (
+      !this.field.fieldName ||
+      !this.field.address ||
+      !this.field.facilitiesInfo ||
+      !this.field.deckType ||
+      !this.field.clubId ||
+      !this.field.hasHeating ||
+      !this.field.hasLighting
+    ) {
+      alert(
+        'Please fill in all required fields: Field Name, Address, Deck Type, Club ID.'
+      );
+      return;
+    }
+
     this.fieldService.createField(this.field);
   }
 }

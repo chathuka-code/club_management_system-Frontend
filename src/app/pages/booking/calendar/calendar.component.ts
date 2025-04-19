@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import { EventClickArg } from '@fullcalendar/core';
 import { BookingService } from '../booking.service';
 
 @Component({
@@ -39,13 +40,14 @@ export class CalendarComponent implements OnInit {
     headerToolbar: {
       left: 'prev,next today',
       center: 'title',
-      right: 'timeGridWeek,timeGridDay'
+      right: 'timeGridWeek,timeGridDay',
     },
     eventColor: '#4a90e2',
     eventTextColor: '#ffffff',
     nowIndicator: true,
     allDaySlot: false,
     expandRows: true,
+    eventClick: this.handleEventClick.bind(this),
   };
 
   fieldId: string | null = null;
@@ -61,12 +63,27 @@ export class CalendarComponent implements OnInit {
         .subscribe((bookings: any[]) => {
           this.bookingData.set(bookings);
           this.calendarOptions.events = bookings.map((booking) => ({
+            id: booking.id,
             title: booking.bookingTitle,
             start: `${booking.bookingDate}T${booking.startTime}:00`,
             end: `${booking.bookingDate}T${booking.endTime}:00`,
           }));
         });
     }
+  }
+
+  handleEventClick(clickInfo: EventClickArg) {
+    // Prevent default browser behavior
+    clickInfo.jsEvent.preventDefault();
+
+    // Log event details to console
+    console.log('Event clicked:', clickInfo.event.id);
+
+    // Navigate to booking page with event ID
+    this.router.navigate([
+      'chooseClubforBooking/chooseFieldforBooking/calendar/editBooking',
+      clickInfo.event.id,
+    ]);
   }
 
   navigateToCreateBooking() {

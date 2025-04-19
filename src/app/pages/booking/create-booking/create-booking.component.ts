@@ -114,6 +114,9 @@ export class CreateBookingComponent implements OnInit {
         this.fieldSection_03.push(field);
       }
     });
+    console.log('Field Section 1:', this.fieldSection_01);
+    console.log('Field Section 2:', this.fieldSection_02);
+    console.log('Field Section 3:', this.fieldSection_03);
   }
 
   resetStates(): void {
@@ -148,6 +151,7 @@ export class CreateBookingComponent implements OnInit {
       selectedPart.isSelected = true;
       this.selectedPartId = selectedPart['id'];
       this.selectedPartByteCode = selectedPart.byteCode;
+      console.log('Selected Part:', selectedPart);
     }
     this.booking.startTime = '';
     this.booking.endTime = '';
@@ -291,6 +295,19 @@ export class CreateBookingComponent implements OnInit {
   createBooking() {
     this.booking.fieldPartId = this.selectedPartId || '';
     this.booking.fieldId = this.fieldId || '';
+
+    if (
+      !this.booking.bookingTitle ||
+      !this.booking.fieldPartId ||
+      !this.booking.startTime ||
+      !this.booking.endTime ||
+      !this.booking.bookingDate
+    ) {
+      console.error(
+        'Please fill in all required fields before creating a booking.'
+      );
+      return;
+    }
 
     this.bookingService.createBooking(this.booking).subscribe({
       next: (response) => {

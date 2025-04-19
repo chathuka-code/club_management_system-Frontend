@@ -4,6 +4,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { TableColumn } from '../../../components/table/table.component';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TeamService, Team } from '../team.service';
+import { ConfirmationDialogComponent } from '../../../components/confirmation-dialog/confirmation-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-team-list',
@@ -13,7 +15,7 @@ import { TeamService, Team } from '../team.service';
   styleUrl: './team-list.component.css',
 })
 export class TeamListComponent implements OnInit {
-  constructor(private router: Router) {}
+  constructor(private router: Router, private dialog: MatDialog) {}
 
   private route = inject(ActivatedRoute);
   private teamService = inject(TeamService);
@@ -49,15 +51,27 @@ export class TeamListComponent implements OnInit {
   }
 
   deleteTeams() {
-    if (this.clubId) {
-      this.teamService.deleteTeams(this.selectedRowIds).subscribe(() => {
-        this.teamService
-          .getAllTeams(this.clubId!)
-          .subscribe((teams: Team[]) => {
-            this.teamData.set(teams);
-          });
-      });
-    }
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '350px',
+      data: {
+        title: 'Confirm Delete',
+        message: 'Are you sure you want to delete this booking?',
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result && this.clubId) {
+        this.teamService.deleteTeams(this.selectedRowIds).subscribe(() => {
+          this.teamService
+            .getAllTeams(this.clubId!)
+            .subscribe((teams: Team[]) => {
+              this.teamData.set(teams);
+            });
+        });
+      }
+    });
   }
 
   handleEdit(teamId: string) {

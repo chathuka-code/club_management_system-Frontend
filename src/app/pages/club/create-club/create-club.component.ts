@@ -27,7 +27,7 @@ export class CreateClubComponent implements OnInit {
 
   private clubService = inject(ClubService);
 
-  apiUrl = 'http://localhost:3000/clubs'; 
+  apiUrl = 'http://localhost:3000/clubs';
 
   club: Club = {
     clubName: '',
@@ -51,6 +51,14 @@ export class CreateClubComponent implements OnInit {
   }
 
   createClub() {
+    if (
+      !this.club.clubName ||
+      !this.club.countryCode ||
+      !this.club.activatedStatus
+    ) {
+      alert('Club name and country are required!');
+      return;
+    }
     this.clubService.createClub(this.club);
     this.resetForm();
   }

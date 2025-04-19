@@ -33,7 +33,7 @@ mat-form-field {
 }
 
 .checkbox {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%; /* Ensure it takes full width of container */
-  }
+  display: flex;
+  justify-content: flex-end;
+  width: 100%; /* Ensure it takes full width of container */
+}

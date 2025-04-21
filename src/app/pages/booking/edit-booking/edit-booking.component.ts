@@ -16,6 +16,7 @@ import { Team, TeamService } from '../../team/team.service';
 import { FieldService, FieldPart } from '../../field/field.service';
 import { catchError, of, timeout } from 'rxjs';
 import { ConfirmationDialogComponent } from '../../../components/confirmation-dialog/confirmation-dialog.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-edit-booking',
@@ -51,6 +52,7 @@ export class EditBookingComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private dialog = inject(MatDialog);
+  private snackBar = inject(MatSnackBar);
 
   today = new Date();
   selectedPartId: string | null = null;
@@ -165,7 +167,7 @@ export class EditBookingComponent implements OnInit {
       teamId: '1',
       userId: '1',
       fieldId: this.fieldId || '', //use the fieldId from the route parameter
-      bookingStatus: 'Pending',
+      bookingStatus: '',
       startTime: '',
       endTime: '',
       bookingDate: null,
@@ -313,7 +315,12 @@ export class EditBookingComponent implements OnInit {
           //filter fieldPartIds based on time overlap
           const overlappingFieldPartIds = response
             .filter((existingBooking) => {
-              //convert times to comparable values
+              // Only consider bookings with status "Approved"
+              if (existingBooking.bookingStatus !== 'Approved') {
+                return false;
+              }
+
+              // Convert times to comparable values
               const existingStartTime = this.timeToMinutes(
                 existingBooking.startTime
               );
@@ -323,7 +330,7 @@ export class EditBookingComponent implements OnInit {
               const newStartTime = this.timeToMinutes(this.booking.startTime);
               const newEndTime = this.timeToMinutes(this.booking.endTime);
 
-              //Check for overlap
+              // Check for overlap
               return (
                 newStartTime < existingEndTime && newEndTime > existingStartTime
               );
@@ -331,17 +338,27 @@ export class EditBookingComponent implements OnInit {
             .map((booking) => booking.fieldPartId);
 
           console.log('Overlapping fieldPartIds:', overlappingFieldPartIds);
+          if (overlappingFieldPartIds.length === 0) {
+            this.isOverlapping = false;
+            return;
+          }
           this.fieldService
             .getFieldPartsByIds(overlappingFieldPartIds)
             .subscribe({
               next: (bytecodes) => {
-                const overlappingByteCodes = bytecodes;
+                const overlappingByteCodes = bytecodes || [];
                 console.log('Overlapping bytecodes:', overlappingByteCodes);
-
+                if (overlappingByteCodes.length === 0) {
+                  this.isOverlapping = false;
+                  return;
+                }
+                // Check if the selected part's bytecode overlaps with any of the overlapping bytecodes
                 for (const byteCode of overlappingByteCodes) {
                   if ((byteCode & (this.selectedPartByteCode || 0)) > 0) {
                     this.isOverlapping = true;
                     break;
+                  } else {
+                    this.isOverlapping = false;
                   }
                 }
 
@@ -371,13 +388,37 @@ export class EditBookingComponent implements OnInit {
           console.log('Booking updated successfully:', response);
           this.router.navigate([
             '/chooseClubforBooking/chooseFieldforBooking/calendar',
-            this.fieldId || '',
+            this.booking.fieldId || '',
           ]);
         },
         error: (error) => {
           console.error('Error updating booking:', error);
         },
       });
+  }
+
+  //for approving booking
+  approveBooking() {
+    this.validateBooking;
+    if (!this.isOverlapping) {
+      this.bookingService.approveBooking(this.bookingId || '').subscribe({
+        next: (response) => {
+          console.log('Booking approved successfully:', response);
+          this.router.navigate([
+            '/chooseClubforBooking/chooseFieldforBooking/calendar',
+            this.booking.fieldId || '',
+          ]);
+        },
+        error: (error) => {
+          console.error('Error approving booking:', error);
+        },
+      });
+    } else {
+      this.snackBar.open('Failed to approve booking', 'Close', {
+        duration: 3000,
+        panelClass: ['error-snackbar'],
+      });
+    }
   }
 
   //for deleteing booking

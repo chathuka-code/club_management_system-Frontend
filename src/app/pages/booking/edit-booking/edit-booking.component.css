@@ -20,10 +20,16 @@ mat-form-field {
 .example-button-row {
   display: flex;
   justify-content: flex-end; /* Align button to the right */
+  gap: 12px; /* Space between buttons */
 }
 
-.example-button-row button {
+.example-button-row .save-button {
   background-color: #008000 !important; /* Green background */
+  color: white !important; /* White text for better contrast */
+}
+
+.example-button-row .approve-button {
+  background-color: #0a57ae !important; /* Green background */
   color: white !important; /* White text for better contrast */
 }
 

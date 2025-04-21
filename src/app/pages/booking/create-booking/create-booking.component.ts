@@ -245,6 +245,10 @@ export class CreateBookingComponent implements OnInit {
           //filter fieldPartIds based on time overlap
           const overlappingFieldPartIds = response
             .filter((existingBooking) => {
+              // Only consider bookings with status "Approved"
+              if (existingBooking.bookingStatus !== 'Approved') {
+                return false;
+              }
               //convert times to comparable values
               const existingStartTime = this.timeToMinutes(
                 existingBooking.startTime
@@ -263,17 +267,27 @@ export class CreateBookingComponent implements OnInit {
             .map((booking) => booking.fieldPartId);
 
           console.log('Overlapping fieldPartIds:', overlappingFieldPartIds);
+          if (overlappingFieldPartIds.length === 0) {
+            this.isOverlapping = false;
+            return;
+          }
+          // Fetch the bytecodes for the overlapping field parts
           this.fieldService
             .getFieldPartsByIds(overlappingFieldPartIds)
             .subscribe({
               next: (bytecodes) => {
-                const overlappingByteCodes = bytecodes;
+                const overlappingByteCodes = bytecodes || [];
                 console.log('Overlapping bytecodes:', overlappingByteCodes);
-
+                if (overlappingByteCodes.length === 0) {
+                  this.isOverlapping = false;
+                  return;
+                }
                 for (const byteCode of overlappingByteCodes) {
                   if ((byteCode & (this.selectedPartByteCode || 0)) > 0) {
                     this.isOverlapping = true;
                     break;
+                  } else {
+                    this.isOverlapping = false;
                   }
                 }
 

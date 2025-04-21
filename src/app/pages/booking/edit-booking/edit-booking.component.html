@@ -1,6 +1,8 @@
 <div class="button-container">
   <span class="delete-button-row">
-    <button mat-flat-button color="warn" (click)="deleteBooking()">Delete</button>
+    <button mat-flat-button color="warn" (click)="deleteBooking()">
+      Delete
+    </button>
   </span>
 </div>
 <div class="form-container">
@@ -154,9 +156,19 @@
   </div>
   <div class="example-button-row">
     <button
+      *ngIf="booking.bookingStatus === 'Pending'"
+      mat-flat-button
+      class="approve-button"
+      (click)="approveBooking()"
+      [disabled]="isOverlapping || !isTimeRangeValid"
+    >
+      Approve
+    </button>
+    <button
       mat-flat-button
       (click)="updateBooking()"
       [disabled]="isOverlapping || !isTimeRangeValid"
+      class="save-button"
     >
       Save
     </button>

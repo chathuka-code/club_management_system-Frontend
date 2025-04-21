@@ -131,4 +131,28 @@ export class BookingService {
       })
     );
   }
+
+  //for approving a booking
+  approveBooking(bookingId: string): Observable<Booking> {
+    return this.http
+      .patch<Booking>(`${this.apiUrl}/${bookingId}`, {
+        bookingStatus: 'Approved',
+      })
+      .pipe(
+        tap((response) => {
+          console.log('Booking approved successfully:', response);
+          this.snackBar.open('Booking approved successfully!', 'Close', {
+            duration: 3000,
+          });
+        }),
+        catchError((err) => {
+          console.error('Error approving booking:', err);
+          this.snackBar.open('Failed to approve booking', 'Close', {
+            duration: 3000,
+            panelClass: ['error-snackbar'],
+          });
+          return throwError(() => err);
+        })
+      );
+  }
 }

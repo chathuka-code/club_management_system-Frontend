@@ -62,12 +62,13 @@ export class CalendarComponent implements OnInit {
         .getAllBookingsByFieldId(this.fieldId)
         .subscribe((bookings: any[]) => {
           this.bookingData.set(bookings);
-          this.calendarOptions.events = bookings.map((booking) => ({
+            this.calendarOptions.events = bookings.map((booking) => ({
             id: booking.id,
             title: booking.bookingTitle,
             start: `${booking.bookingDate}T${booking.startTime}:00`,
             end: `${booking.bookingDate}T${booking.endTime}:00`,
-          }));
+            color: booking.bookingStatus === 'Pending' ? '#BE3D2A' : '#4a90e2',
+            }));
         });
     }
   }

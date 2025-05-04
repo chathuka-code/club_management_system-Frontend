@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar'; // For user feedback
 import { Router } from '@angular/router';
 import {
   catchError,
+  concatMap,
   forkJoin,
   map,
   Observable,
@@ -22,6 +23,52 @@ export interface User {
   isDeleted: boolean;
 }
 
+interface ClubAdminRoleDto {
+  clubId: string;
+}
+
+interface TeamManagerRoleDto {
+  teamId: string;
+}
+
+interface FieldAdminRoleDto {
+  fieldId: string;
+}
+
+interface AddRolesRequest {
+  clubAdmins: ClubAdminRoleDto[];
+  teamManagers: TeamManagerRoleDto[];
+  fieldAdmins: FieldAdminRoleDto[];
+}
+
+export interface RemoveRolesRequest {
+  clubIds: string[];
+  teamIds: string[];
+  fieldIds: string[];
+}
+
+//for getting user roles by user ID
+interface ClubRoleDto {
+  clubId: string;
+  clubName: string;
+}
+
+interface TeamRoleDto {
+  teamId: string;
+  teamName: string;
+}
+
+interface FieldRoleDto {
+  fieldId: string;
+  fieldName: string;
+}
+
+interface UserRolesResponse {
+  clubAdmins: ClubRoleDto[];
+  teamManagers: TeamRoleDto[];
+  fieldAdmins: FieldRoleDto[];
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -29,10 +76,7 @@ export class UserService {
   private http = inject(HttpClient);
   private snackBar = inject(MatSnackBar); // For showing notifications
   private router = inject(Router);
-  private apiUrl = 'http://localhost:3000/users';
-  private clubAdminApiUrl = 'http://localhost:3000/user_clubs';
-  private teamManagerApiUrl = 'http://localhost:3000/user_teams';
-  private fieldAdminApiUrl = 'http://localhost:3000/user_fields';
+  private apiUrl = 'https://localhost:7224/api/Users';
 
   //for fetching users
   getAllUsers(): Observable<User[]> {
@@ -66,40 +110,27 @@ export class UserService {
     );
   }
 
-  getUserRoles(userId: string): Observable<any> {
-    const clubAdminRoles$ = this.http.get<any[]>(
-      `${this.clubAdminApiUrl}?userId=${userId}`
-    );
-    const teamManagerRoles$ = this.http.get<any[]>(
-      `${this.teamManagerApiUrl}?userId=${userId}`
-    );
-    const fieldAdminRoles$ = this.http.get<any[]>(
-      `${this.fieldAdminApiUrl}?userId=${userId}`
-    );
-
-    return forkJoin({
-      clubAdmins: clubAdminRoles$,
-      teamManagers: teamManagerRoles$,
-      fieldAdmins: fieldAdminRoles$,
-    }).pipe(
-      map((roles) => {
-        return {
-          clubAdmins: roles.clubAdmins || [],
-          teamManagers: roles.teamManagers || [],
-          fieldAdmins: roles.fieldAdmins || [],
-        };
-      }),
-      catchError((err) => {
-        console.error('Error fetching user roles:', err);
-        this.snackBar.open('Failed to fetch user roles', 'Close', {
-          duration: 3000,
-          panelClass: ['error-snackbar'],
-        });
-        return throwError(() => err); // Re-throw the error
-      })
-    );
+  getUserRoles(userId: string): Observable<UserRolesResponse> {
+    return this.http
+      .get<UserRolesResponse>(`${this.apiUrl}/${userId}/roles`)
+      .pipe(
+        catchError((err) => {
+          if (err.status === 404) {
+            this.snackBar.open('User not found', 'Close', {
+              duration: 3000,
+              panelClass: ['error-snackbar'],
+            });
+          } else {
+            console.error('Error fetching user roles:', err);
+            this.snackBar.open('Failed to fetch user roles', 'Close', {
+              duration: 3000,
+              panelClass: ['error-snackbar'],
+            });
+          }
+          return throwError(() => err);
+        })
+      );
   }
-
   //for creating a user
   createUser(
     user: User,
@@ -107,121 +138,35 @@ export class UserService {
     teamManagers: any[],
     fieldAdmins: any[]
   ) {
-    this.http.post(this.apiUrl, user).subscribe({
-      next: (response: any) => {
-        console.log('User created successfully:', response);
-        if (clubAdmins.length > 0) {
-          clubAdmins.forEach((clubAdmin) => {
-            this.http
-              .post(this.clubAdminApiUrl, {
-                userId: response.id,
-                clubId: clubAdmin.clubId,
-                clubName: clubAdmin.clubName,
-              })
-              .subscribe({
-                next: () => console.log('Club admin assigned successfully'),
-                error: (err) =>
-                  console.error('Error assigning club admin:', err),
-              });
-          });
-        }
-        if (teamManagers.length > 0) {
-          teamManagers.forEach((teamManager) => {
-            this.http
-              .post(this.teamManagerApiUrl, {
-                userId: response.id,
-                teamId: teamManager.teamId,
-                teamName: teamManager.teamName,
-              })
-              .subscribe({
-                next: () => console.log('Team manager assigned successfully'),
-                error: (err) =>
-                  console.error('Error assigning team manager:', err),
-              });
-          });
-        }
-        if (fieldAdmins.length > 0) {
-          fieldAdmins.forEach((fieldAdmin) => {
-            this.http
-              .post(this.fieldAdminApiUrl, {
-                userId: response.id,
-                fieldId: fieldAdmin.fieldId,
-                fieldName: fieldAdmin.fieldName,
-              })
-              .subscribe({
-                next: () => console.log('Field admin assigned successfully'),
-                error: (err) =>
-                  console.error('Error assigning field admin:', err),
-              });
-          });
-        }
-        this.snackBar.open('User created successfully!', 'Close', {
-          duration: 3000,
-        });
-        this.router.navigate(['/users']);
-      },
-      error: (err) => {
-        console.error('Error creating user:', err);
-        this.snackBar.open('Failed to create user', 'Close', {
-          duration: 3000,
-          panelClass: ['error-snackbar'],
-        });
-      },
+    console.log('Creating user:', {
+      ...user,
+      clubAdmins,
+      teamManagers,
+      fieldAdmins,
     });
+    this.http
+      .post(this.apiUrl, { ...user, clubAdmins, teamManagers, fieldAdmins })
+      .subscribe({
+        next: (response: any) => {
+          console.log('User created successfully:', response);
+          this.snackBar.open('User created successfully!', 'Close', {
+            duration: 3000,
+          });
+          this.router.navigate(['/users']);
+        },
+        error: (err) => {
+          console.error('Error creating user:', err);
+          this.snackBar.open('Failed to create user', 'Close', {
+            duration: 3000,
+            panelClass: ['error-snackbar'],
+          });
+        },
+      });
   }
 
-  //for creating roles
-  createRoles(
-    userId: string,
-    clubAdmins: any[],
-    teamManagers: any[],
-    fieldAdmins: any[]
-  ) {
-    if (clubAdmins.length > 0) {
-      clubAdmins.forEach((clubAdmin) => {
-        this.http
-          .post(this.clubAdminApiUrl, {
-            userId: userId,
-            clubId: clubAdmin.clubId,
-            clubName: clubAdmin.clubName,
-          })
-          .subscribe({
-            next: () => console.log('Club admin assigned successfully'),
-            error: (err) =>
-              console.error('Error assigning club admin:', err),
-          });
-      });
-    }
-    if (teamManagers.length > 0) {
-      teamManagers.forEach((teamManager) => {
-        this.http
-          .post(this.teamManagerApiUrl, {
-            userId: userId,
-            teamId: teamManager.teamId,
-            teamName: teamManager.teamName,
-          })
-          .subscribe({
-            next: () => console.log('Team manager assigned successfully'),
-            error: (err) =>
-              console.error('Error assigning team manager:', err),
-          });
-      });
-    }
-    if (fieldAdmins.length > 0) {
-      fieldAdmins.forEach((fieldAdmin) => {
-        this.http
-          .post(this.fieldAdminApiUrl, {
-            userId: userId,
-            fieldId: fieldAdmin.fieldId,
-            fieldName: fieldAdmin.fieldName,
-          })
-          .subscribe({
-            next: () => console.log('Field admin assigned successfully'),
-            error: (err) =>
-              console.error('Error assigning field admin:', err),
-          });
-      });
-    }
+  //to add roles to a user
+  createRoles(userId: string, request: AddRolesRequest) {
+    return this.http.post<void>(`${this.apiUrl}/${userId}/roles`, request);
   }
 
   //for deleting a user
@@ -254,74 +199,20 @@ export class UserService {
     return forkJoin(deletionObservables).pipe(map(() => undefined)); // Convert to Observable<void>
   }
 
+  //for updating a user and removing roles
   updateUser(
     userId: string,
     user: User,
-    deletedClubAdmins: string[],
-    deletedTeamManagers: string[],
-    deletedFieldAdmins: string[]
+    removedRoles: RemoveRolesRequest
   ): Observable<void> {
-    return this.http.patch<void>(`${this.apiUrl}/${userId}`, user).pipe(
-      switchMap(() => {
-        const deleteRequests: Observable<void>[] = [];
-  
-        // Function to fetch ID before deleting
-        const fetchAndDelete = (apiUrl: string, filterParams: string): Observable<void> => {
-          return this.http.get<any[]>(`${apiUrl}?${filterParams}`).pipe(
-            switchMap((records) => {
-              if (records.length > 0) {
-                return this.http.delete<void>(`${apiUrl}/${records[0].id}`).pipe(
-                  tap(() => console.log(`Deleted record with ID: ${records[0].id}`))
-                );
-              } else {
-                console.warn(`No record found for: ${filterParams}`);
-                return of(undefined);
-              }
-            })
-          );
-        };
-  
-        // Fetch and delete club admins
-        if (deletedClubAdmins.length > 0) {
-          deleteRequests.push(
-            ...deletedClubAdmins.map((clubAdmin) =>
-              fetchAndDelete(this.clubAdminApiUrl, `userId=${userId}&clubId=${clubAdmin}`)
-            )
-          );
-        }
-  
-        // Fetch and delete team managers
-        if (deletedTeamManagers.length > 0) {
-          deleteRequests.push(
-            ...deletedTeamManagers.map((teamManager) =>
-              fetchAndDelete(this.teamManagerApiUrl, `userId=${userId}&teamId=${teamManager}`)
-            )
-          );
-        }
-  
-        // Fetch and delete field admins
-        if (deletedFieldAdmins.length > 0) {
-          deleteRequests.push(
-            ...deletedFieldAdmins.map((fieldAdmin) =>
-              fetchAndDelete(this.fieldAdminApiUrl, `userId=${userId}&fieldId=${fieldAdmin}`)
-            )
-          );
-        }
-  
-        return deleteRequests.length > 0 ? forkJoin(deleteRequests).pipe(map(() => {})) : of(undefined);
-      }),
-      tap(() => {
-        this.snackBar.open('User updated successfully!', 'Close', { duration: 3000 });
-      }),
-      catchError((err) => {
-        console.error('Error updating user:', err);
-        this.snackBar.open('Failed to update user', 'Close', {
-          duration: 3000,
-          panelClass: ['error-snackbar'],
-        });
-        return throwError(() => err);
-      })
+    // First update user details
+    return this.http.put<void>(`${this.apiUrl}/${userId}`, user).pipe(
+      // Then remove roles (concatenating the two requests)
+      concatMap(() =>
+        this.http.delete<void>(`${this.apiUrl}/${userId}/roles`, {
+          body: removedRoles,
+        })
+      )
     );
   }
-  
 }

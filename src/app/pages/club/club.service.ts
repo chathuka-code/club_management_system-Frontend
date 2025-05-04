@@ -8,7 +8,7 @@ export interface Club {
   [x: string]: any;
   clubName: string;
   countryCode: string;
-  activatedStatus: 'active' | 'inactive';
+  activatedStatus: boolean;
   description: string;
   logo: string;
   isDeleted: boolean;
@@ -23,7 +23,7 @@ export class ClubService {
   private http = inject(HttpClient);
   private snackBar = inject(MatSnackBar); // For showing notifications
   private router = inject(Router);
-  private apiUrl = 'http://localhost:3000/clubs';
+  private apiUrl = 'https://localhost:7224/api/Clubs';
   private countryApiUrl = 'https://restcountries.com/v3.1/all';
 
   //for creating a club
@@ -50,7 +50,7 @@ export class ClubService {
   //for fetching
   getAllClubs(): Observable<Club[]> {
     return this.http
-      .get<Club[]>('http://localhost:3000/clubs')
+      .get<Club[]>(this.apiUrl)
       .pipe(map((clubs) => clubs.filter((club) => !club.isDeleted)));
   }
 

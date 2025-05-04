@@ -29,7 +29,6 @@ export class CreateFieldComponent implements OnInit {
   ngOnInit() {
     this.route.paramMap.subscribe((params) => {
       this.field.clubId = params.get('clubId') || '';
-      console.log('Received clubId:', this.field.clubId);
     });
   }
 
@@ -46,14 +45,13 @@ export class CreateFieldComponent implements OnInit {
   };
 
   createField() {
+    
     if (
       !this.field.fieldName ||
       !this.field.address ||
       !this.field.facilitiesInfo ||
       !this.field.deckType ||
-      !this.field.clubId ||
-      !this.field.hasHeating ||
-      !this.field.hasLighting
+      !this.field.clubId
     ) {
       alert(
         'Please fill in all required fields: Field Name, Address, Deck Type, Club ID.'

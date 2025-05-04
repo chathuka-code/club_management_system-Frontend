@@ -21,7 +21,7 @@ export class TeamService {
   private http = inject(HttpClient);
   private snackBar = inject(MatSnackBar); // For showing notifications
   private router = inject(Router);
-  private apiUrl = 'http://localhost:3000/teams';
+  private apiUrl = 'https://localhost:7224/api/Teams';
 
   // For fetching teams
   getAllTeams(clubId: string): Observable<Team[]> {

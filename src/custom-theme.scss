@@ -78,6 +78,18 @@ $club_management_system-theme: mat.define-theme(
     margin-right: 10px;
   }
 
+  .logout-button {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    cursor: pointer;
+  }
+
+  .active {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    border-left: 4px solid white;
+  }
+
   /* Main Content Container */
   .content-container {
     flex-grow: 1;

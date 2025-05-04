@@ -37,7 +37,7 @@ constructor(private router: Router) {}
   }
 
   getAllClubs() {
-    this.http.get<Club[]>('http://localhost:3000/clubs').subscribe({
+    this.http.get<Club[]>('https://localhost:7224/api/Clubs').subscribe({
       next: (response) => {
         console.log('Clubs:', response);
         this.userData = response.filter(club => !club.isDeleted);

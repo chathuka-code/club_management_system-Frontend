@@ -25,6 +25,8 @@ export class ClubCardComponent implements OnInit {
   constructor(private router: Router) {}
 
   private http = inject(HttpClient);
+  private apiUrl = 'https://localhost:7224/api/Clubs';
+
 
   ngOnInit(): void {
     this.getAllClubs();
@@ -37,7 +39,7 @@ export class ClubCardComponent implements OnInit {
   }
 
   getAllClubs() {
-    this.http.get<Club[]>('http://localhost:3000/clubs').subscribe({
+    this.http.get<Club[]>(this.apiUrl).subscribe({
       next: (response) => {
         console.log('Clubs:', response);
         this.userData = response.filter(club => !club.isDeleted);

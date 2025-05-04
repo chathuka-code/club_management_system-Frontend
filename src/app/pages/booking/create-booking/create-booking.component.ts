@@ -63,10 +63,9 @@ export class CreateBookingComponent implements OnInit {
   booking: Booking = {
     bookingTitle: '',
     fieldPartId: '',
-    teamId: '1',
-    userId: '1',
-    fieldId: this.fieldId || '', //from the route parameter
-    bookingStatus: 'Pending',
+    teamId: '',
+    userId: '',
+    bookingStatus: false,
     startTime: '',
     endTime: '',
     bookingDate: null,
@@ -117,23 +116,6 @@ export class CreateBookingComponent implements OnInit {
     console.log('Field Section 1:', this.fieldSection_01);
     console.log('Field Section 2:', this.fieldSection_02);
     console.log('Field Section 3:', this.fieldSection_03);
-  }
-
-  resetStates(): void {
-    this.selectedPartId = null;
-    this.selectedPartByteCode = null;
-    this.isOverlapping = false;
-    this.booking = {
-      fieldPartId: '',
-      teamId: '1',
-      userId: '1',
-      fieldId: this.fieldId || '', //use the fieldId from the route parameter
-      bookingStatus: 'Pending',
-      startTime: '',
-      endTime: '',
-      bookingDate: null,
-      isDeleted: false,
-    };
   }
 
   //toggle selection of field parts
@@ -308,7 +290,6 @@ export class CreateBookingComponent implements OnInit {
   //to create a booking
   createBooking() {
     this.booking.fieldPartId = this.selectedPartId || '';
-    this.booking.fieldId = this.fieldId || '';
 
     if (
       !this.booking.bookingTitle ||

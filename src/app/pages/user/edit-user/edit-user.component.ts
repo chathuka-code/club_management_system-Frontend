@@ -5,7 +5,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { CommonModule } from '@angular/common';
-import { UserService, User } from '../user.service';
+import { UserService, User, RemoveRolesRequest } from '../user.service';
 import { MatDialog } from '@angular/material/dialog';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -42,13 +42,14 @@ export class EditUserComponent implements OnInit {
     isDeleted: false,
   };
 
-  clubAdmins: any[] = []; // Array to hold club admins
-  teamManagers: any[] = []; // Array to hold team managers
-  fieldAdmins: any[] = []; // Array to hold field admins
+  clubAdmins = signal<{ clubId: string; clubName: string }[]>([]); // Array to hold club admins
+  teamManagers = signal<{ teamId: string; teamName: string }[]>([]); // Array to hold team managers
+  fieldAdmins = signal<{ fieldId: string; fieldName: string }[]>([]); // Array to hold field admins
 
-  deletedClubAdmins: any[] = []; // Array to hold deleted club admins
-  deletedTeamManagers: any[] = []; // Array to hold deleted team managers
-  deletedFieldAdmins: any[] = []; // Array to hold deleted field admins
+  // Deletion tracking
+  deletedClubAdmins = signal<string[]>([]);
+  deletedTeamManagers = signal<string[]>([]);
+  deletedFieldAdmins = signal<string[]>([]);
   roles: any;
 
   ngOnInit(): void {
@@ -73,13 +74,11 @@ export class EditUserComponent implements OnInit {
 
   saveUser() {
     this.userService
-      .updateUser(
-        this.userId!,
-        this.user,
-        this.deletedClubAdmins,
-        this.deletedTeamManagers,
-        this.deletedFieldAdmins
-      )
+      .updateUser(this.userId!, this.user, {
+        clubIds: this.deletedClubAdmins(),
+        teamIds: this.deletedTeamManagers(),
+        fieldIds: this.deletedFieldAdmins(),
+      })
       .subscribe(
         (response) => {
           console.log('User updated successfully:', response);
@@ -91,16 +90,23 @@ export class EditUserComponent implements OnInit {
       );
     // Check if any roles were assigned
     if (
-      this.clubAdmins.length > 0 ||
-      this.teamManagers.length > 0 ||
-      this.fieldAdmins.length > 0
+      this.clubAdmins().length > 0 ||
+      this.teamManagers().length > 0 ||
+      this.fieldAdmins().length > 0
     ) {
-      this.userService.createRoles(
-        this.userId!,
-        this.clubAdmins,
-        this.teamManagers,
-        this.fieldAdmins
-      );
+      this.userService
+        .createRoles(this.userId!, {
+          clubAdmins: this.clubAdmins().map((admin) => ({
+            clubId: admin.clubId,
+          })),
+          teamManagers: this.teamManagers().map((manager) => ({
+            teamId: manager.teamId,
+          })),
+          fieldAdmins: this.fieldAdmins().map((admin) => ({
+            fieldId: admin.fieldId,
+          })),
+        })
+        .subscribe();
     }
     this.router.navigate(['/users']);
   }
@@ -117,25 +123,13 @@ export class EditUserComponent implements OnInit {
         // Check if result exists (user clicked Save)
         console.log('Dialog closed with data:', result);
 
-        // Access the specific data properties
-        this.clubAdmins = result.clubAdmins;
-        this.teamManagers = result.teamManagers;
-        this.fieldAdmins = result.fieldAdmins;
-
-        this.deletedClubAdmins = result.deletedClubAdmins;
-        this.deletedTeamManagers = result.deletedTeamManagers;
-        this.deletedFieldAdmins = result.deletedFieldAdmins;
+        this.clubAdmins.set(result.clubAdmins);
+        this.teamManagers.set(result.teamManagers);
+        this.fieldAdmins.set(result.fieldAdmins);
+        this.deletedClubAdmins.set(result.deletedClubAdmins);
+        this.deletedTeamManagers.set(result.deletedTeamManagers);
+        this.deletedFieldAdmins.set(result.deletedFieldAdmins);
       }
     });
-  }
-
-  createUser() {
-    console.log('User Data:', this.user);
-    this.userService.createUser(
-      this.user,
-      this.clubAdmins,
-      this.teamManagers,
-      this.fieldAdmins
-    );
   }
 }

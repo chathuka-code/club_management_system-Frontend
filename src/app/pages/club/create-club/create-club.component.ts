@@ -32,7 +32,7 @@ export class CreateClubComponent implements OnInit {
   club: Club = {
     clubName: '',
     countryCode: '',
-    activatedStatus: 'active',
+    activatedStatus: true,
     description: '',
     logo: '',
     isDeleted: false,
@@ -67,7 +67,7 @@ export class CreateClubComponent implements OnInit {
     this.club = {
       clubName: '',
       countryCode: '',
-      activatedStatus: 'active',
+      activatedStatus: true,
       description: '',
       logo: '',
       isDeleted: false,

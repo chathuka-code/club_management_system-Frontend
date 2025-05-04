@@ -51,16 +51,16 @@
   <mat-form-field appearance="outline">
     <mat-label>Has Lighting</mat-label>
     <mat-select [(ngModel)]="field.hasLighting">
-      <mat-option value="true">Yes</mat-option>
-      <mat-option value="false">No</mat-option>
+      <mat-option [value]="true">Yes</mat-option>
+      <mat-option [value]="false">No</mat-option>
     </mat-select>
   </mat-form-field>
 
   <mat-form-field appearance="outline">
     <mat-label>Has Heating</mat-label>
     <mat-select [(ngModel)]="field.hasHeating">
-      <mat-option value="true">Yes</mat-option>
-      <mat-option value="false">No</mat-option>
+      <mat-option [value]="true">Yes</mat-option>
+      <mat-option [value]="false">No</mat-option>
     </mat-select>
   </mat-form-field>
 

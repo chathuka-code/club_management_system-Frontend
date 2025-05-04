@@ -69,10 +69,9 @@ export class EditBookingComponent implements OnInit {
   booking: Booking = {
     bookingTitle: '',
     fieldPartId: '',
-    teamId: '1',
-    userId: '1',
-    fieldId: this.fieldId || '', //from the route parameter
-    bookingStatus: 'Pending',
+    teamId: '',
+    userId: '',
+    bookingStatus: false,
     startTime: '',
     endTime: '',
     bookingDate: null,
@@ -98,7 +97,7 @@ export class EditBookingComponent implements OnInit {
         this.startTime = booking.startTime;
         this.endTime = booking.endTime;
         this.fieldService
-          .getFieldPartsByFieldId(booking.fieldId || '')
+          .getFieldPartsByFieldId(this.fieldId || '') //consider
           .pipe(
             timeout(5000),
             catchError((error) => {
@@ -164,10 +163,9 @@ export class EditBookingComponent implements OnInit {
     this.isOverlapping = false;
     this.booking = {
       fieldPartId: '',
-      teamId: '1',
-      userId: '1',
-      fieldId: this.fieldId || '', //use the fieldId from the route parameter
-      bookingStatus: '',
+      teamId: '',
+      userId: '',
+      bookingStatus: false,
       startTime: '',
       endTime: '',
       bookingDate: null,
@@ -388,7 +386,7 @@ export class EditBookingComponent implements OnInit {
           console.log('Booking updated successfully:', response);
           this.router.navigate([
             '/chooseClubforBooking/chooseFieldforBooking/calendar',
-            this.booking.fieldId || '',
+            this.fieldId || '', //consider
           ]);
         },
         error: (error) => {
@@ -406,7 +404,7 @@ export class EditBookingComponent implements OnInit {
           console.log('Booking approved successfully:', response);
           this.router.navigate([
             '/chooseClubforBooking/chooseFieldforBooking/calendar',
-            this.booking.fieldId || '',
+            this.fieldId || '',
           ]);
         },
         error: (error) => {
@@ -442,7 +440,7 @@ export class EditBookingComponent implements OnInit {
             // Handle successful deletion (e.g., navigation or refresh)
             this.router.navigate([
               '/chooseClubforBooking/chooseFieldforBooking/calendar',
-              this.booking.fieldId || '',
+              this.fieldId || '',
             ]);
           });
       }

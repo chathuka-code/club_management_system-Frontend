@@ -34,8 +34,8 @@ export class FieldService {
   private http = inject(HttpClient);
   private snackBar = inject(MatSnackBar); // For showing notifications
   private router = inject(Router);
-  private apiUrl = 'http://localhost:3000/fields';
-  private fieldPartApiUrl = 'http://localhost:3000/fieldParts';
+  private apiUrl = 'https://localhost:7224/api/Fields';
+  private fieldPartApiUrl = 'https://localhost:7224/api/FieldParts';
 
   //for creating a field
   createField(field: Field) {
@@ -46,17 +46,17 @@ export class FieldService {
           duration: 3000,
         });
         const fieldParts = [
-          { partName: '1', byteCode: 0b0001 },
-          { partName: '2', byteCode: 0b0010 },
-          { partName: '3', byteCode: 0b0100 },
-          { partName: '4', byteCode: 0b1000 },
-          { partName: '1-2', byteCode: 0b0011 },
-          { partName: '3-4', byteCode: 0b1100 },
-          { partName: '1-4', byteCode: 0b1111 },
+          { partName: '1', byteCode: 1 },
+          { partName: '2', byteCode: 2 },
+          { partName: '3', byteCode: 4 },
+          { partName: '4', byteCode: 8 },
+          { partName: '1-2', byteCode: 3 },
+          { partName: '3-4', byteCode: 12 },
+          { partName: '1-4', byteCode: 15 },
         ]; // Example field parts
         fieldParts.forEach((fieldPartName) => {
           this.http
-            .post('http://localhost:3000/fieldParts', {
+            .post(this.fieldPartApiUrl, {
               fieldPartName: fieldPartName.partName,
               byteCode: fieldPartName.byteCode,
               fieldId: response.id,
@@ -88,7 +88,7 @@ export class FieldService {
   getAllFields(clubId: string): Observable<Field[]> {
     return this.http
       .get<Field[]>(
-        `http://localhost:3000/fields?clubId=${clubId}&isDeleted=false`
+        `https://localhost:7224/api/Fields?clubId=${clubId}&isDeleted=false`
       )
       .pipe(
         map((response) => {

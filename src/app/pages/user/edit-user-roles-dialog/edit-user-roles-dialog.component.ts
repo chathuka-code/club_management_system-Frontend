@@ -46,26 +46,20 @@ export class EditUserRolesDialogComponent implements OnInit {
   teams: { name: string; id: string }[] = [];
 
   //to store assigned roles
-  assignedClubAdmins = signal<
-    { userId: string; clubId: string; clubName: string }[]
-  >([]);
-  assignedTeamManagers = signal<
-    { userId: string; teamId: string; teamName: string }[]
-  >([]);
-  assignedFieldAdmins = signal<
-    { userId: string; fieldId: string; fieldName: string }[]
-  >([]);
+  assignedClubAdmins = signal<{ clubId: string; clubName: string }[]>([]);
+  assignedTeamManagers = signal<{ teamId: string; teamName: string }[]>([]);
+  assignedFieldAdmins = signal<{ fieldId: string; fieldName: string }[]>([]);
 
   //to store fetched assigned roles
-  assignedClubAdminsFetched = signal<
-    { userId: string; clubId: string; clubName: string }[]
-  >([]);
-  assignedTeamManagersFetched = signal<
-    { userId: string; teamId: string; teamName: string }[]
-  >([]);
-  assignedFieldAdminsFetched = signal<
-    { userId: string; fieldId: string; fieldName: string }[]
-  >([]);
+  assignedClubAdminsFetched = signal<{ clubId: string; clubName: string }[]>(
+    []
+  );
+  assignedTeamManagersFetched = signal<{ teamId: string; teamName: string }[]>(
+    []
+  );
+  assignedFieldAdminsFetched = signal<{ fieldId: string; fieldName: string }[]>(
+    []
+  );
 
   //to get deleted roles
   assignedClubAdminsDeleted = signal<string[]>([]);
@@ -159,10 +153,10 @@ export class EditUserRolesDialogComponent implements OnInit {
 
   onSave(): void {
     this.dialogRef.close({
-      clubAdmins: this.assignedClubAdmins(),
-      teamManagers: this.assignedTeamManagers(),
-      fieldAdmins: this.assignedFieldAdmins(),
-      deletedClubAdmins: this.assignedClubAdminsDeleted(),
+      clubAdmins: this.assignedClubAdmins(), // Access signal value with ()
+      teamManagers: this.assignedTeamManagers(), // Access signal value with ()
+      fieldAdmins: this.assignedFieldAdmins(), // Access signal value with ()
+      deletedClubAdmins: this.assignedClubAdminsDeleted(), // Access signal value with ()
       deletedTeamManagers: this.assignedTeamManagersDeleted(),
       deletedFieldAdmins: this.assignedFieldAdminsDeleted(),
     });
@@ -186,7 +180,7 @@ export class EditUserRolesDialogComponent implements OnInit {
       return admins.filter((admin) => admin.clubId !== adminToRemove.clubId);
     });
 
-    console.log('removed:', this.assignedClubAdminsDeleted())
+    console.log('removed:', this.assignedClubAdminsDeleted());
   }
 
   //to remove team manager
@@ -208,7 +202,7 @@ export class EditUserRolesDialogComponent implements OnInit {
         (manager) => manager.teamId !== managerToRemove.teamId
       );
     });
-    console.log('removedteams:', this.assignedTeamManagersDeleted())
+    console.log('removedteams:', this.assignedTeamManagersDeleted());
   }
 
   //to remove field admin
@@ -235,7 +229,6 @@ export class EditUserRolesDialogComponent implements OnInit {
     this.assignedClubAdmins.set([
       ...this.assignedClubAdmins(),
       {
-        userId: '',
         clubId: this.forClubAdmin.clubId,
         clubName: this.forClubAdmin.clubName,
       },
@@ -247,7 +240,6 @@ export class EditUserRolesDialogComponent implements OnInit {
     this.assignedTeamManagers.set([
       ...this.assignedTeamManagers(),
       {
-        userId: '',
         teamId: this.selectedTeam.teamId,
         teamName: this.selectedTeam.teamName,
       },
@@ -259,7 +251,6 @@ export class EditUserRolesDialogComponent implements OnInit {
     this.assignedFieldAdmins.set([
       ...this.assignedFieldAdmins(),
       {
-        userId: '',
         fieldId: this.selectedField.fieldId,
         fieldName: this.selectedField.fieldName,
       },

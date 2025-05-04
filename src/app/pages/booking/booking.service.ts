@@ -13,9 +13,8 @@ export interface Booking {
   endTime: string;
   userId: string;
   fieldPartId: string;
-  fieldId: string;
   teamId?: string;
-  bookingStatus: string;
+  bookingStatus: boolean;
   isDeleted: boolean;
 }
 
@@ -27,7 +26,7 @@ export class BookingService {
   private http = inject(HttpClient);
   private snackBar = inject(MatSnackBar); // For showing notifications
   private router = inject(Router);
-  private apiUrl = 'http://localhost:3000/bookings';
+  private apiUrl = 'https://localhost:7224/api/Bookings';
 
   // For creating a booking
   createBooking(booking: Booking): Observable<Booking> {
@@ -71,7 +70,7 @@ export class BookingService {
 
   //for getting all bookings by fieldId
   getAllBookingsByFieldId(fieldId: string): Observable<Booking[]> {
-    return this.http.get<Booking[]>(`${this.apiUrl}?fieldId=${fieldId}`).pipe(
+    return this.http.get<Booking[]>(`${this.apiUrl}/by-field/${fieldId}`).pipe(
       map((response) => {
         console.log('Bookings:', response);
         return response;
@@ -135,7 +134,7 @@ export class BookingService {
   //for approving a booking
   approveBooking(bookingId: string): Observable<Booking> {
     return this.http
-      .patch<Booking>(`${this.apiUrl}/${bookingId}`, {
+      .patch<Booking>(`${this.apiUrl}/${bookingId}/approve`, {
         bookingStatus: 'Approved',
       })
       .pipe(

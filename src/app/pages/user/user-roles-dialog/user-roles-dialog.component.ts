@@ -28,7 +28,7 @@ import { CommonModule } from '@angular/common';
     MatButtonModule,
     MatTabsModule,
     CommonModule,
-    MatIconModule
+    MatIconModule,
   ],
   templateUrl: './user-roles-dialog.component.html',
   styleUrls: ['./user-roles-dialog.component.css'],
@@ -45,15 +45,9 @@ export class UserRolesDialogComponent implements OnInit {
   teams: { name: string; id: string }[] = [];
 
   //to store assigned roles
-  assignedClubAdmins = signal<
-    { userId: string; clubId: string; clubName: string }[]
-  >([]);
-  assignedTeamManagers = signal<
-    { userId: string; teamId: string; teamName: string }[]
-  >([]);
-  assignedFieldAdmins = signal<
-    { userId: string; fieldId: string; fieldName: string }[]
-  >([]);
+  assignedClubAdmins = signal<{ clubId: string; clubName: string }[]>([]);
+  assignedTeamManagers = signal<{ teamId: string; teamName: string }[]>([]);
+  assignedFieldAdmins = signal<{ fieldId: string; fieldName: string }[]>([]);
 
   private _selectedClub: string = '';
   get selectedClub(): string {
@@ -161,7 +155,7 @@ export class UserRolesDialogComponent implements OnInit {
     this.dialogRef.close({
       clubAdmins: this.assignedClubAdmins(),
       teamManagers: this.assignedTeamManagers(),
-      fieldAdmins: this.assignedFieldAdmins()
+      fieldAdmins: this.assignedFieldAdmins(),
     });
   }
 
@@ -170,7 +164,6 @@ export class UserRolesDialogComponent implements OnInit {
     this.assignedClubAdmins.set([
       ...this.assignedClubAdmins(),
       {
-        userId: '',
         clubId: this.forClubAdmin.clubId,
         clubName: this.forClubAdmin.clubName,
       },
@@ -182,7 +175,6 @@ export class UserRolesDialogComponent implements OnInit {
     this.assignedTeamManagers.set([
       ...this.assignedTeamManagers(),
       {
-        userId: '',
         teamId: this.selectedTeam.teamId,
         teamName: this.selectedTeam.teamName,
       },
@@ -194,7 +186,6 @@ export class UserRolesDialogComponent implements OnInit {
     this.assignedFieldAdmins.set([
       ...this.assignedFieldAdmins(),
       {
-        userId: '',
         fieldId: this.selectedField.fieldId,
         fieldName: this.selectedField.fieldName,
       },

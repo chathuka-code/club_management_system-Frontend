@@ -33,7 +33,7 @@ export class EditClubComponent implements OnInit {
   club: Club = {
     clubName: '',
     countryCode: '',
-    activatedStatus: 'active',
+    activatedStatus: true,
     description: '',
     logo: '',
     isDeleted: false,

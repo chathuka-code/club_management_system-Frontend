@@ -156,7 +156,7 @@
   </div>
   <div class="example-button-row">
     <button
-      *ngIf="booking.bookingStatus === 'Pending'"
+      *ngIf="!booking.bookingStatus"
       mat-flat-button
       class="approve-button"
       (click)="approveBooking()"

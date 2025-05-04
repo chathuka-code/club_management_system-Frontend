@@ -9,6 +9,11 @@
         <span>{{ item.label }}</span>
       </a>
       }
+      <!-- Logout Button -->
+      <a mat-list-item (click)="logout()" class="logout-button">
+        <mat-icon>logout</mat-icon>
+        <span>Logout</span>
+      </a>
     </mat-nav-list>
   </mat-sidenav>
 </mat-sidenav-container>

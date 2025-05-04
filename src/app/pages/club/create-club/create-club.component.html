@@ -21,8 +21,8 @@
   <mat-form-field appearance="outline">
     <mat-label>Activated-Status</mat-label>
     <mat-select [(ngModel)]="club.activatedStatus">
-      <mat-option value="active">Active</mat-option>
-      <mat-option value="inactive">Inactive</mat-option>
+      <mat-option [value]="true">Active</mat-option>
+      <mat-option [value]="false">Inactive</mat-option>
     </mat-select>
   </mat-form-field>
 

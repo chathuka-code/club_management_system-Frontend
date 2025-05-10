@@ -1,13 +1,16 @@
-<mat-toolbar>
-  <span>CMS</span>
-  <span class="example-spacer"></span>
-  <mat-form-field>
-    <mat-label>Select Role</mat-label>
-    <mat-select (selectionChange)="($event.value)" name="test">
-      <mat-option value="test1">test1</mat-option>
-      <mat-option value="test2">test2</mat-option>
-      <mat-option value="test3">test3</mat-option>
-      <mat-option value="test4">test4</mat-option>
+<mat-toolbar color="primary">
+  <span>Club Management System</span>
+  <span class="spacer"></span>
+  
+  <mat-form-field appearance="fill" *ngIf="roleOptions.length > 0">
+    <mat-label>Current Role</mat-label>
+    <mat-select 
+      [value]="selectedRole?.value || ''"
+      (valueChange)="onRoleChange($event)"
+    >
+      <mat-option *ngFor="let role of roleOptions" [value]="role.value">
+        {{ role.display }}
+      </mat-option>
     </mat-select>
   </mat-form-field>
 </mat-toolbar>

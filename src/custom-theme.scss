@@ -74,7 +74,7 @@ $club_management_system-theme: mat.define-theme(
   }
 
   mat-icon {
-    color: #ecf0f1;
+    color: #585d5e;
     margin-right: 10px;
   }
 
@@ -88,6 +88,7 @@ $club_management_system-theme: mat.define-theme(
   .active {
     background-color: rgba(255, 255, 255, 0.2) !important;
     border-left: 4px solid white;
+    border-radius: 0%;
   }
 
   /* Main Content Container */

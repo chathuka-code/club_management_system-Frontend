@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 interface LoginResponse {
   token: string;
   isSuperAdmin: boolean;
+  userId: string;
   roles: {
     clubAdmins: { Id: string; ClubName: string }[];
     teamManagers: { Id: string; TeamName: string }[];
@@ -26,10 +27,10 @@ interface LoginResponse {
     MatInputModule,
     MatButtonModule,
     CommonModule,
-    RouterLink
+    RouterLink,
   ],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
   email = '';
@@ -43,30 +44,34 @@ export class LoginComponent {
     if (this.email && this.password) {
       this.isLoading.set(true);
       this.errorMessage.set('');
-      
+
       this.authService.login(this.email, this.password).subscribe({
         next: (response: LoginResponse) => {
           // Store token and user data
           localStorage.setItem('auth_token', response.token);
           localStorage.setItem('is_super_admin', String(response.isSuperAdmin));
-          
+          localStorage.setItem('user_id', response.userId);
+
           // Store roles in a more accessible format
           const userRoles = {
             clubAdmins: response.roles.clubAdmins,
             teamManagers: response.roles.teamManagers,
-            fieldAdmins: response.roles.fieldAdmins
+            fieldAdmins: response.roles.fieldAdmins,
           };
           localStorage.setItem('user_roles', JSON.stringify(userRoles));
-          
+
           this.isLoading.set(false);
-          
+          this.authService.checkAuthStatus(); // Update auth state in
+          this.authService.initializeRoles(); // Initialize roles in AuthService
           // Redirect based on user role or to default page
           this.redirectAfterLogin(response);
         },
         error: (err) => {
           this.isLoading.set(false);
-          this.errorMessage.set(err.error?.message || 'Login failed. Please try again.');
-        }
+          this.errorMessage.set(
+            err.error?.message || 'Login failed. Please try again.'
+          );
+        },
       });
     }
   }
@@ -74,18 +79,18 @@ export class LoginComponent {
   private redirectAfterLogin(response: LoginResponse): void {
     console.log('redirectAfterLogin');
     // Example: Redirect super admins to admin dashboard
-    // if (response.isSuperAdmin) {
-    //   this.router.navigate(['/admin/dashboard']);
-    //   return;
-    // }
-    
+    if (response.isSuperAdmin) {
+      this.router.navigate(['/users']);
+      return;
+    }
+
     // // Example: Redirect users with club admin roles to club dashboard
-    // if (response.roles.clubAdmins.length > 0) {
-    //   this.router.navigate(['/club/dashboard']);
-    //   return;
-    // }
-    
+    if (response.roles.clubAdmins.length > 0) {
+      this.router.navigate(['/clubs']);
+      return;
+    }
+
     // Default redirect
-    this.router.navigate(['/clubs']);
+    this.router.navigate(['/chooseClubforBooking']);
   }
 }

@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar'; // For user feedback
 import { Router } from '@angular/router';
 import {
@@ -78,9 +78,17 @@ export class UserService {
   private router = inject(Router);
   private apiUrl = 'https://localhost:7224/api/Users';
 
+  token = localStorage.getItem('auth_token');
+
+  // Set the headers with the Authorization token
+  headers = new HttpHeaders({
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${this.token}`,
+  });
+
   //for fetching users
   getAllUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this.apiUrl).pipe(
+    return this.http.get<User[]>(this.apiUrl, { headers: this.headers }).pipe(
       map((users) => users.filter((user) => !user.isDeleted)),
       catchError((err) => {
         console.error('Error fetching users:', err);
@@ -95,24 +103,28 @@ export class UserService {
 
   //for fetching a user by ID
   getUserById(userId: string): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}/${userId}`).pipe(
-      tap((user) => {
-        console.log('Fetched user:', user);
-      }),
-      catchError((err) => {
-        console.error('Error fetching user:', err);
-        this.snackBar.open('Failed to fetch user', 'Close', {
-          duration: 3000,
-          panelClass: ['error-snackbar'],
-        });
-        return throwError(() => err); // Re-throw the error
-      })
-    );
+    return this.http
+      .get<User>(`${this.apiUrl}/${userId}`, { headers: this.headers })
+      .pipe(
+        tap((user) => {
+          console.log('Fetched user:', user);
+        }),
+        catchError((err) => {
+          console.error('Error fetching user:', err);
+          this.snackBar.open('Failed to fetch user', 'Close', {
+            duration: 3000,
+            panelClass: ['error-snackbar'],
+          });
+          return throwError(() => err); // Re-throw the error
+        })
+      );
   }
 
   getUserRoles(userId: string): Observable<UserRolesResponse> {
     return this.http
-      .get<UserRolesResponse>(`${this.apiUrl}/${userId}/roles`)
+      .get<UserRolesResponse>(`${this.apiUrl}/${userId}/roles`, {
+        headers: this.headers,
+      })
       .pipe(
         catchError((err) => {
           if (err.status === 404) {
@@ -145,7 +157,11 @@ export class UserService {
       fieldAdmins,
     });
     this.http
-      .post(this.apiUrl, { ...user, clubAdmins, teamManagers, fieldAdmins })
+      .post(
+        this.apiUrl,
+        { ...user, clubAdmins, teamManagers, fieldAdmins },
+        { headers: this.headers }
+      )
       .subscribe({
         next: (response: any) => {
           console.log('User created successfully:', response);
@@ -166,33 +182,41 @@ export class UserService {
 
   //to add roles to a user
   createRoles(userId: string, request: AddRolesRequest) {
-    return this.http.post<void>(`${this.apiUrl}/${userId}/roles`, request);
+    return this.http.post<void>(`${this.apiUrl}/${userId}/roles`, request, {
+      headers: this.headers,
+    });
   }
 
   //for deleting a user
   deleteUser(userIds: string[]): Observable<void> {
     // Convert array of IDs to array of observables
     const deletionObservables = userIds.map((id) =>
-      this.http.patch(`${this.apiUrl}/${id}`, { isDeleted: true }).pipe(
-        tap(() => {
-          console.log(`User with ID ${id} marked as deleted.`);
-          this.snackBar.open(
-            `User with ID ${id} deleted successfully!`,
-            'Close',
-            {
+      this.http
+        .patch(
+          `${this.apiUrl}/${id}`,
+          { isDeleted: true },
+          { headers: this.headers }
+        )
+        .pipe(
+          tap(() => {
+            console.log(`User with ID ${id} marked as deleted.`);
+            this.snackBar.open(
+              `User with ID ${id} deleted successfully!`,
+              'Close',
+              {
+                duration: 3000,
+              }
+            );
+          }),
+          catchError((err) => {
+            console.error(`Error deleting user with ID ${id}:`, err);
+            this.snackBar.open(`Failed to delete user with ID ${id}`, 'Close', {
               duration: 3000,
-            }
-          );
-        }),
-        catchError((err) => {
-          console.error(`Error deleting user with ID ${id}:`, err);
-          this.snackBar.open(`Failed to delete user with ID ${id}`, 'Close', {
-            duration: 3000,
-            panelClass: ['error-snackbar'],
-          });
-          return throwError(() => err); // Re-throw the error
-        })
-      )
+              panelClass: ['error-snackbar'],
+            });
+            return throwError(() => err); // Re-throw the error
+          })
+        )
     );
 
     // Execute all deletions in parallel and return a single observable
@@ -206,13 +230,36 @@ export class UserService {
     removedRoles: RemoveRolesRequest
   ): Observable<void> {
     // First update user details
-    return this.http.put<void>(`${this.apiUrl}/${userId}`, user).pipe(
-      // Then remove roles (concatenating the two requests)
-      concatMap(() =>
-        this.http.delete<void>(`${this.apiUrl}/${userId}/roles`, {
-          body: removedRoles,
-        })
-      )
+    return this.http
+      .put<void>(`${this.apiUrl}/${userId}`, user, { headers: this.headers })
+      .pipe(
+        // Then remove roles (concatenating the two requests)
+        concatMap(() =>
+          this.http.delete<void>(`${this.apiUrl}/${userId}/roles`, {
+            headers: this.headers,
+            body: removedRoles,
+          })
+        )
+      );
+  }
+
+  // user.service.ts
+  updateUserActiveRole(
+    userId: string,
+    activeRoleType: string | null,
+    activeRoleId: string | null
+  ): Observable<void> {
+    const url = `${this.apiUrl}/${userId}/active-role`;
+    const body = {
+      activeRoleType,
+      activeRoleId,
+    };
+
+    return this.http.patch<void>(url, body).pipe(
+      catchError((error) => {
+        console.error('Error updating active role:', error);
+        return throwError(() => error);
+      })
     );
   }
 }

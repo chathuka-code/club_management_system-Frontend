@@ -21,11 +21,16 @@ import { EditBookingComponent } from './pages/booking/edit-booking/edit-booking.
 import { LoginComponent } from './pages/auth/login/login.component';
 import { AuthGuard } from './pages/auth/auth.guard';
 import { LayoutComponent } from './layout/layout.component';
+import { SignupComponent } from './pages/auth/signup/signup.component';
 
 export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
+  },
+  {
+    path: 'signup',
+    component: SignupComponent,
   },
   {
     path: '',
@@ -35,86 +40,86 @@ export const routes: Routes = [
       // All your existing routes go here as children
       {
         path: 'clubs/createClub',
-        component: CreateClubComponent
+        component: CreateClubComponent,
       },
-      { 
-        path: 'clubs', 
-        component: ClubListComponent
+      {
+        path: 'clubs',
+        component: ClubListComponent,
       },
       {
         path: 'clubs/editClub/:clubId',
-        component: EditClubComponent
+        component: EditClubComponent,
       },
       {
         path: 'chooseClub',
-        component: ClubCardComponent
+        component: ClubCardComponent,
       },
       {
         path: 'chooseClub/fields/:clubId',
-        component: FieldListComponent
+        component: FieldListComponent,
       },
       {
         path: 'chooseClub/fields/createField/:clubId',
-        component: CreateFieldComponent
+        component: CreateFieldComponent,
       },
       {
         path: 'chooseClub/fields/editField/:fieldId',
-        component: EditFieldComponent
+        component: EditFieldComponent,
       },
       {
         path: 'chooseClubforTeam/teams/createTeam/:clubId',
-        component: CreateTeamComponent
+        component: CreateTeamComponent,
       },
       {
         path: 'chooseClubforTeam',
-        component: ClubCardTeamComponent
+        component: ClubCardTeamComponent,
       },
       {
         path: 'chooseClubforTeam/teams/:clubId',
-        component: TeamListComponent
+        component: TeamListComponent,
       },
       {
         path: 'chooseClubforTeam/teams/editTeam/:teamId',
-        component: EditTeamComponent
+        component: EditTeamComponent,
       },
       {
         path: 'users/createUser',
-        component: CreateUserComponent
+        component: CreateUserComponent,
       },
-      { 
-        path: 'users', 
-        component: UserListComponent
+      {
+        path: 'users',
+        component: UserListComponent,
       },
       {
         path: 'users/editUser/:userId',
-        component: EditUserComponent
+        component: EditUserComponent,
       },
       {
         path: 'chooseClubforBooking',
-        component: ClubCardBookingComponent
+        component: ClubCardBookingComponent,
       },
       {
         path: 'chooseClubforBooking/chooseFieldforBooking/:clubId',
-        component: FieldCardBookingComponent
+        component: FieldCardBookingComponent,
       },
       {
         path: 'chooseClubforBooking/chooseFieldforBooking/calendar/:fieldId',
-        component: CalendarComponent
+        component: CalendarComponent,
       },
       {
         path: 'chooseClubforBooking/chooseFieldforBooking/calendar/createBooking/:fieldId',
-        component: CreateBookingComponent
+        component: CreateBookingComponent,
       },
       {
         path: 'chooseClubforBooking/chooseFieldforBooking/calendar/editBooking/:bookingId',
-        component: EditBookingComponent
+        component: EditBookingComponent,
       },
-      
+
       // Default route when accessing the base path
-      { path: '', pathMatch: 'full', redirectTo: 'clubs' }
-    ]
+      { path: '', pathMatch: 'full', redirectTo: 'clubs' },
+    ],
   },
-  
+
   // Fallback route
-  { path: '**', redirectTo: 'login' }
+  { path: '**', redirectTo: 'login' },
 ];

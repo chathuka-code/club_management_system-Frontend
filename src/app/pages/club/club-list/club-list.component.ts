@@ -6,16 +6,20 @@ import { TableColumn } from '../../../components/table/table.component';
 import { ClubService, Club } from '../club.service';
 import { ConfirmationDialogComponent } from '../../../components/confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-club-list',
   standalone: true,
-  imports: [TableComponent, MatButtonModule],
+  imports: [TableComponent, MatButtonModule, CommonModule],
   templateUrl: './club-list.component.html',
   styleUrl: './club-list.component.css',
 })
 export class ClubListComponent implements OnInit {
-  constructor(private router: Router) {}
+  isSuperAdmin: boolean = false;
+  constructor(private router: Router) {
+    this.isSuperAdmin = localStorage.getItem('is_super_admin') === 'true';
+  }
   private dialog = inject(MatDialog);
 
   private clubService = inject(ClubService);

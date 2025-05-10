@@ -53,6 +53,7 @@ export class CreateBookingComponent implements OnInit {
   selectedPartByteCode: number | null = null;
   isOverlapping: boolean = false;
   isTimeRangeValid: boolean = false;
+  userId: string | null = null;
 
   bookableFields: FieldPart[] = [];
   teams: Team[] = [];
@@ -63,7 +64,7 @@ export class CreateBookingComponent implements OnInit {
   booking: Booking = {
     bookingTitle: '',
     fieldPartId: '',
-    teamId: '',
+    teamId: undefined,
     userId: '',
     bookingStatus: false,
     startTime: '',
@@ -77,6 +78,9 @@ export class CreateBookingComponent implements OnInit {
     this.route.paramMap.subscribe((params) => {
       this.fieldId = params.get('fieldId');
     });
+
+    this.userId = localStorage.getItem('user_id');
+    this.booking.userId = this.userId || '';
 
     this.fieldService
       .getFieldPartsByFieldId(this.fieldId || '')

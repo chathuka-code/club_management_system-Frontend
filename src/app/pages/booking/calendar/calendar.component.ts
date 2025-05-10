@@ -67,7 +67,7 @@ export class CalendarComponent implements OnInit {
             title: booking.bookingTitle,
             start: `${booking.bookingDate}T${booking.startTime}:00`,
             end: `${booking.bookingDate}T${booking.endTime}:00`,
-            color: booking.bookingStatus === 'Pending' ? '#BE3D2A' : '#4a90e2',
+            color: booking.bookingStatus ? '#4a90e2' : '#BE3D2A',
             }));
         });
     }

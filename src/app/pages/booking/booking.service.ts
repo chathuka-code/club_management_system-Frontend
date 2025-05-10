@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar'; // For user feedback
 import { Router } from '@angular/router';
 import { catchError, forkJoin, map, Observable, tap, throwError } from 'rxjs';
@@ -27,6 +27,14 @@ export class BookingService {
   private snackBar = inject(MatSnackBar); // For showing notifications
   private router = inject(Router);
   private apiUrl = 'https://localhost:7224/api/Bookings';
+
+  token = localStorage.getItem('auth_token');
+
+  // Set the headers with the Authorization token
+  headers = new HttpHeaders({
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${this.token}`,
+  });
 
   // For creating a booking
   createBooking(booking: Booking): Observable<Booking> {
@@ -93,22 +101,24 @@ export class BookingService {
 
   //for updating a booking
   updateBooking(bookingId: string, booking: Booking): Observable<Booking> {
-    return this.http.patch<Booking>(`${this.apiUrl}/${bookingId}`, booking).pipe(
-      tap((response) => {
-        console.log('Booking updated successfully:', response);
-        this.snackBar.open('Booking updated successfully!', 'Close', {
-          duration: 3000,
-        });
-      }),
-      catchError((err) => {
-        console.error('Error updating booking:', err);
-        this.snackBar.open('Failed to update booking', 'Close', {
-          duration: 3000,
-          panelClass: ['error-snackbar'],
-        });
-        return throwError(() => err);
-      })
-    );
+    return this.http
+      .patch<Booking>(`${this.apiUrl}/${bookingId}`, booking)
+      .pipe(
+        tap((response) => {
+          console.log('Booking updated successfully:', response);
+          this.snackBar.open('Booking updated successfully!', 'Close', {
+            duration: 3000,
+          });
+        }),
+        catchError((err) => {
+          console.error('Error updating booking:', err);
+          this.snackBar.open('Failed to update booking', 'Close', {
+            duration: 3000,
+            panelClass: ['error-snackbar'],
+          });
+          return throwError(() => err);
+        })
+      );
   }
 
   //for deleting a booking
@@ -135,8 +145,8 @@ export class BookingService {
   approveBooking(bookingId: string): Observable<Booking> {
     return this.http
       .patch<Booking>(`${this.apiUrl}/${bookingId}/approve`, {
-        bookingStatus: 'Approved',
-      })
+        bookingStatus: true,
+      }, { headers: this.headers })
       .pipe(
         tap((response) => {
           console.log('Booking approved successfully:', response);

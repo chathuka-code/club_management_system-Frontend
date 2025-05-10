@@ -41,6 +41,7 @@ export class CreateClubComponent implements OnInit {
   countries = signal<{ name: string; code: string }[]>([]);
 
   ngOnInit() {
+    console.log(localStorage.getItem('auth_data'));
     this.clubService.fetchCountries().subscribe((data) => {
       this.countries.set(data);
     });

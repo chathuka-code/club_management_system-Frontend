@@ -8,27 +8,13 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from './pages/auth/auth.service';
 
-
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [
-    RouterOutlet,
-    HeaderComponent,
-    NavBarComponent,
-    TableComponent,
-    CreateClubComponent,
-    CommonModule,
-    RouterModule
-  ],
+  imports: [RouterOutlet, CommonModule, RouterModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
-export class AppComponent implements OnInit {
-  constructor(private authService: AuthService) {}
-
-  ngOnInit() {
-    this.authService.checkAuthStatus();
-  }
+export class AppComponent {
   title = 'club_management_system';
 }

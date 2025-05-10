@@ -1,18 +1,22 @@
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #sidenav opened mode="side" [style.width]="'200px'">
+  <mat-sidenav mode="side" opened>
     <mat-nav-list>
-      <!-- <a mat-list-item>Home</a>
-        <a mat-list-item>Partners</a> -->
-      @for(item of menuItems;track $index){
-      <a mat-list-item [routerLink]="item.route">
-        <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
-        <span>{{ item.label }}</span>
+      <!-- Modified menu items with flex container -->
+      <a mat-list-item *ngFor="let item of filteredMenuItems" 
+         [routerLink]="item.route" 
+         routerLinkActive="active">
+        <div class="menu-item-container">
+          <mat-icon class="menu-icon">{{ item.icon }}</mat-icon>
+          <span class="menu-label">{{ item.label }}</span>
+        </div>
       </a>
-      }
+
       <!-- Logout Button -->
       <a mat-list-item (click)="logout()" class="logout-button">
-        <mat-icon>logout</mat-icon>
-        <span>Logout</span>
+        <div class="menu-item-container">
+          <mat-icon class="menu-icon">logout</mat-icon>
+          <span class="menu-label">Logout</span>
+        </div>
       </a>
     </mat-nav-list>
   </mat-sidenav>

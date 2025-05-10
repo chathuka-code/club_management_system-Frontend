@@ -4,6 +4,20 @@
 .mat-sidenav-content{
     padding: 20px;
 }
-
+.menu-item-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .menu-icon {
+    margin-right: 16px;
+    flex-shrink: 0;
+  }
+  
+  .menu-label {
+    flex: 1;
+  }
   
   

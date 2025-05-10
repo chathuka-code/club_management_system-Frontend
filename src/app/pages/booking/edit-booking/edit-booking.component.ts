@@ -83,12 +83,14 @@ export class EditBookingComponent implements OnInit {
     this.route.paramMap.subscribe((params) => {
       this.bookingId = params.get('bookingId');
     });
+    
 
     this.bookingService
       .getBookingById(this.bookingId || '')
       .subscribe((booking: Booking) => {
         this.booking = booking;
         this.selectedPartId = booking.fieldPartId;
+        this.fieldId = booking['fieldId'];
 
         this.selectedDate = booking.bookingDate
           ? this.convertToLocalISO(new Date(booking.bookingDate).toString())

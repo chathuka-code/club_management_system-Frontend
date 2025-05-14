@@ -66,6 +66,23 @@ export class TeamService {
       );
   }
 
+  getTeamOwnership = (teamId: string): Observable<Boolean> => {
+    return this.http
+      .get<Boolean>(`${this.apiUrl}/by-team/${teamId}`, {
+        headers: this.headers,
+      })
+      .pipe(
+        map((response) => {
+          console.log('Team ownership:', response);
+          return response;
+        }),
+        catchError((err) => {
+          console.error('Error fetching team ownership:', err);
+          return throwError(() => err);
+        })
+      );
+  };
+
   // For soft deleting a team
   deleteTeams(teamIds: string[]): Observable<void> {
     // Convert array of IDs to array of observables

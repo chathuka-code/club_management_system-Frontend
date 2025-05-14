@@ -8,6 +8,8 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TeamService, Team } from '../team.service';
 import { Router } from '@angular/router';
+import { ConfirmationDialogComponent } from '../../../components/confirmation-dialog/confirmation-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-edit-team',
@@ -27,6 +29,7 @@ export class EditTeamComponent implements OnInit {
   private teamService = inject(TeamService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private dialog = inject(MatDialog);
 
   teamId: string | null = null;
 
@@ -36,6 +39,7 @@ export class EditTeamComponent implements OnInit {
     clubId: '',
     isDeleted: false,
   };
+  isTeamOwned: Boolean = false;
 
   ngOnInit() {
     this.route.paramMap.subscribe((params) => {
@@ -46,6 +50,14 @@ export class EditTeamComponent implements OnInit {
     if (this.teamId) {
       this.teamService.getTeamById(this.teamId).subscribe((team) => {
         this.team = team;
+
+        this.teamId &&
+          this.teamService.getTeamOwnership(this.teamId).subscribe({
+            next: (response) => {
+              console.log('Team data:', response);
+              this.isTeamOwned = response;
+            },
+          });
       });
     } else {
       console.error('teamId is null');
@@ -62,4 +74,31 @@ export class EditTeamComponent implements OnInit {
     }
   }
 
+  deleteTeam() {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '350px',
+      data: {
+        title: 'Confirm Delete',
+        message: 'Are you sure you want to delete this team?',
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        if (this.teamId) {
+          this.teamService.deleteTeams([this.teamId]).subscribe({
+            next: (response) => {
+              console.log('Team deleted successfully:', response);
+              this.router.navigate(['/teams']);
+            },
+            error: (err) => {
+              console.error('Error deleting team:', err);
+            },
+          });
+        }
+      }
+    });
+  }
 }

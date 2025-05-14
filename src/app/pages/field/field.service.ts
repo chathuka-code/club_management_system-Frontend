@@ -114,6 +114,24 @@ export class FieldService {
       );
   }
 
+
+  getFieldOwnership = (fieldId: string): Observable<Boolean> => {
+    return this.http
+      .get<Boolean>(`${this.apiUrl}/by-field/${fieldId}`, {
+        headers: this.headers,
+      })
+      .pipe(
+        map((response) => {
+          console.log('Field ownership:', response);
+          return response;
+        }),
+        catchError((err) => {
+          console.error('Error fetching field ownership:', err);
+          return throwError(() => err);
+        })
+      );
+  };
+
   //for soft deleting a field
   deleteFields(fieldIds: string[]): Observable<void> {
     // Convert array of IDs to array of observables

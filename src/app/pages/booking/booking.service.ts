@@ -56,6 +56,23 @@ export class BookingService {
     );
   }
 
+  getBookingOwnership = (booking: Booking): Observable<Boolean> => {
+    return this.http
+      .post<Boolean>(`${this.apiUrl}/by-userId`, booking, {
+        headers: this.headers,
+      })
+      .pipe(
+        map((response) => {
+          console.log('Booking ownership:', response);
+          return response;
+        }),
+        catchError((err) => {
+          console.error('Error fetching booking ownership:', err);
+          return throwError(() => err);
+        })
+      );
+  };
+
   //for getting all bookings by date and field
   getBookingsByDateAndField(
     bookingDate: string,
@@ -144,9 +161,13 @@ export class BookingService {
   //for approving a booking
   approveBooking(bookingId: string): Observable<Booking> {
     return this.http
-      .patch<Booking>(`${this.apiUrl}/${bookingId}/approve`, {
-        bookingStatus: true,
-      }, { headers: this.headers })
+      .patch<Booking>(
+        `${this.apiUrl}/${bookingId}/approve`,
+        {
+          bookingStatus: true,
+        },
+        { headers: this.headers }
+      )
       .pipe(
         tap((response) => {
           console.log('Booking approved successfully:', response);

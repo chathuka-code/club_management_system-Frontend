@@ -9,7 +9,7 @@ bootstrapApplication(AppComponent, appConfig)
     const authService = appRef.injector.get(AuthService);
     
     // Initialize authentication state
-    authService.checkAuthStatus();
+    authService.initializeAuthState();
     
     // Optional: Log initialization
     console.log('Application bootstrapped, auth state initialized');

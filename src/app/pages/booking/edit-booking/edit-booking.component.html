@@ -1,6 +1,6 @@
 <div class="button-container">
   <span class="delete-button-row">
-    <button mat-flat-button color="warn" (click)="deleteBooking()">
+    <button *ngIf="isBookingOwned" mat-flat-button color="warn" (click)="deleteBooking()">
       Delete
     </button>
   </span>
@@ -156,7 +156,7 @@
   </div>
   <div class="example-button-row">
     <button
-      *ngIf="!booking.bookingStatus"
+      *ngIf="!booking.bookingStatus && isBookingOwned"
       mat-flat-button
       class="approve-button"
       (click)="approveBooking()"
@@ -165,6 +165,7 @@
       Approve
     </button>
     <button
+      *ngIf="isBookingOwned"
       mat-flat-button
       (click)="updateBooking()"
       [disabled]="isOverlapping || !isTimeRangeValid"

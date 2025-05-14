@@ -2,9 +2,11 @@
   <mat-sidenav mode="side" opened>
     <mat-nav-list>
       <!-- Modified menu items with flex container -->
-      <a mat-list-item *ngFor="let item of filteredMenuItems" 
-         [routerLink]="item.route" 
-         routerLinkActive="active">
+      <a
+        mat-list-item
+        *ngFor="let item of filteredMenuItems"
+        (click)="item.action()"
+      >
         <div class="menu-item-container">
           <mat-icon class="menu-icon">{{ item.icon }}</mat-icon>
           <span class="menu-label">{{ item.label }}</span>

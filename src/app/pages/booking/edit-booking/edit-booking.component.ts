@@ -59,6 +59,7 @@ export class EditBookingComponent implements OnInit {
   selectedPartByteCode: number | null = null;
   isOverlapping: boolean = false;
   isTimeRangeValid: boolean = true;
+  isBookingOwned: Boolean = false;
 
   bookableFields: FieldPart[] = [];
   teams: Team[] = [];
@@ -83,7 +84,6 @@ export class EditBookingComponent implements OnInit {
     this.route.paramMap.subscribe((params) => {
       this.bookingId = params.get('bookingId');
     });
-    
 
     this.bookingService
       .getBookingById(this.bookingId || '')
@@ -115,6 +115,12 @@ export class EditBookingComponent implements OnInit {
               this.separateBookableFieldsIntoSections(); //call the method to separate fields into sections
             },
           });
+        this.bookingService.getBookingOwnership(booking).subscribe({
+          next: (response) => {
+            console.log('Booking ownership:', response);
+            this.isBookingOwned = response;
+          },
+        });
       });
 
     const date = this.convertFromLocalISO('2025-04-10');

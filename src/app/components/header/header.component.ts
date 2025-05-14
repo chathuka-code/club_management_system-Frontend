@@ -124,6 +124,7 @@ export class HeaderComponent {
       // Store initial role selection
       this.authService.setCurrentRole(this.selectedRole);
     }
+    localStorage.setItem('current_role_id', this.selectedRole?.id || '');
   }
 
   onRoleChange(selectedValue: string) {
@@ -141,14 +142,14 @@ export class HeaderComponent {
         .subscribe((response) => {
           console.log('User role updated successfully:', response);
         });
-        if (this.selectedRole.type === 'super-admin') {
-          this.router.navigate(['/users']);
-        } else if (this.selectedRole.type === 'club-admin') {
-          this.router.navigate(['/clubs']);
-        } else {
-          this.router.navigate(['/chooseClubforBooking']);
-        }
+      if (this.selectedRole.type === 'super-admin') {
+        this.router.navigate(['/users']);
+      } else {
+        this.router.navigate(['/chooseClubforBooking']);
+      }
       console.log('Role changed to:', this.selectedRole);
     }
+
+    localStorage.setItem('current_role_id', this.selectedRole?.id || '');
   }
 }

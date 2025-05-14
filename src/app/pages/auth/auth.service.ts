@@ -38,16 +38,29 @@ export class AuthService {
   ) {}
 
   login(email: string, password: string) {
-    return this.http.post<{
-      token: string;
-      isSuperAdmin: boolean;
-      userId: string;
-      roles: {
-        clubAdmins: { Id: string; ClubName: string }[];
-        teamManagers: { Id: string; TeamName: string }[];
-        fieldAdmins: { Id: string; FieldName: string }[];
-      };
-    }>(`${this.apiUrl}/login`, { email, password });
+    return this.http
+      .post<{
+        token: string;
+        isSuperAdmin: boolean;
+        userId: string;
+        roles: {
+          clubAdmins: { Id: string; ClubName: string }[];
+          teamManagers: { Id: string; TeamName: string }[];
+          fieldAdmins: { Id: string; FieldName: string }[];
+        };
+      }>(`${this.apiUrl}/login`, { email, password })
+      .pipe(
+        tap((response) => {
+          localStorage.setItem('auth_token', response.token);
+
+          this.setAuthState(
+            response.token,
+            response.isSuperAdmin,
+            response.userId,
+            response.roles
+          );
+        })
+      );
   }
 
   signup(
@@ -66,28 +79,55 @@ export class AuthService {
 
   initializeAuthState() {
     const token = localStorage.getItem('auth_token');
-    const isSuperAdmin = localStorage.getItem('is_super_admin') === 'true';
-    const roles = JSON.parse(
-      localStorage.getItem('user_roles') ||
-        '{"clubAdmins": [], "teamManagers": [], "fieldAdmins": []}'
-    );
+    if (!token) return;
 
-    this._isAuthenticated.set(!!token);
-    console.log('tok', !!token);
-    console.log('_isAuthenticated', this._isAuthenticated());
+    this._isAuthenticated.set(true);
+    this._isSuperAdmin.set(localStorage.getItem('is_super_admin') === 'true');
+    this._userRoles.set(
+      JSON.parse(
+        localStorage.getItem('user_roles') ||
+          '{"clubAdmins":[],"teamManagers":[],"fieldAdmins":[]}'
+      )
+    );
 
     const role = localStorage.getItem('current_role');
     this._currentRole.set(role ? JSON.parse(role) : null);
+  }
 
+  private setAuthState(
+    token: string,
+    isSuperAdmin: boolean,
+    userId: string,
+    roles: {
+      clubAdmins: { Id: string; ClubName: string }[];
+      teamManagers: { Id: string; TeamName: string }[];
+      fieldAdmins: { Id: string; FieldName: string }[];
+    }
+  ) {
+    localStorage.setItem('auth_token', token);
+    localStorage.setItem('is_super_admin', String(isSuperAdmin));
+    localStorage.setItem('user_roles', JSON.stringify(roles));
+    localStorage.setItem('user_id', userId);
+
+    this._isAuthenticated.set(true);
     this._isSuperAdmin.set(isSuperAdmin);
     this._userRoles.set(roles);
   }
 
   logout() {
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('is_super_admin');
-    localStorage.removeItem('user_roles');
-    localStorage.removeItem('current_role');
+    const userId = localStorage.getItem('user_id');
+    // Clear all auth-related storage
+    [
+      'auth_token',
+      'is_super_admin',
+      'user_roles',
+      'current_role',
+      'user_id',
+    ].forEach((key) => {
+      localStorage.removeItem(key);
+    });
+
+    // Reset all signals
     this._isAuthenticated.set(false);
     this._isSuperAdmin.set(false);
     this._userRoles.set({
@@ -95,21 +135,13 @@ export class AuthService {
       teamManagers: [],
       fieldAdmins: [],
     });
+    this._currentRole.set(null);
 
-    //set activity to null
-    this.userService
-      .updateUserActiveRole(localStorage.getItem('user_id')!, null, null)
-      .subscribe((response) => {
-        console.log('User role updated successfully:', response);
-      });
-    localStorage.removeItem('user_id');
-
+    // Update server about logout
+    if (userId) {
+      this.userService.updateUserActiveRole(userId, null, null).subscribe();
+    }
     this.router.navigate(['/login']);
-  }
-
-  // Call this in your app initialization
-  checkAuthStatus() {
-    this.initializeAuthState();
   }
 
   setCurrentRole(role: RoleOption | null) {
@@ -123,6 +155,10 @@ export class AuthService {
 
   getCurrentRole(): RoleOption | null {
     const role = localStorage.getItem('current_role');
+    console.log(
+      'Current role from localStorage:',
+      role ? JSON.parse(role) : null
+    );
     return role ? JSON.parse(role) : null;
   }
 

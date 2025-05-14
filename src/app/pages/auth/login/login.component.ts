@@ -47,23 +47,12 @@ export class LoginComponent {
 
       this.authService.login(this.email, this.password).subscribe({
         next: (response: LoginResponse) => {
-          // Store token and user data
-          localStorage.setItem('auth_token', response.token);
-          localStorage.setItem('is_super_admin', String(response.isSuperAdmin));
-          localStorage.setItem('user_id', response.userId);
-
-          // Store roles in a more accessible format
-          const userRoles = {
-            clubAdmins: response.roles.clubAdmins,
-            teamManagers: response.roles.teamManagers,
-            fieldAdmins: response.roles.fieldAdmins,
-          };
-          localStorage.setItem('user_roles', JSON.stringify(userRoles));
 
           this.isLoading.set(false);
-          this.authService.checkAuthStatus(); // Update auth state in
+          this.authService.initializeAuthState(); // Initialize auth state in AuthService
           this.authService.initializeRoles(); // Initialize roles in AuthService
           // Redirect based on user role or to default page
+          
           this.redirectAfterLogin(response);
         },
         error: (err) => {
@@ -81,12 +70,6 @@ export class LoginComponent {
     // Example: Redirect super admins to admin dashboard
     if (response.isSuperAdmin) {
       this.router.navigate(['/users']);
-      return;
-    }
-
-    // // Example: Redirect users with club admin roles to club dashboard
-    if (response.roles.clubAdmins.length > 0) {
-      this.router.navigate(['/clubs']);
       return;
     }
 

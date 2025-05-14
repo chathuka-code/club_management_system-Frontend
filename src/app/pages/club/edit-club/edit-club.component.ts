@@ -7,6 +7,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { CommonModule } from '@angular/common';
 import { ClubService, Club } from '../club.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialogComponent } from '../../../components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-edit-club',
@@ -26,9 +28,11 @@ export class EditClubComponent implements OnInit {
   private clubService = inject(ClubService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private dialog = inject(MatDialog);
 
   clubId: string | null = null;
   countries = signal<{ name: string; code: string }[]>([]);
+  isClubOwned: Boolean = false;
 
   club: Club = {
     clubName: '',
@@ -48,6 +52,14 @@ export class EditClubComponent implements OnInit {
     if (this.clubId) {
       this.clubService.getClubById(this.clubId).subscribe((club) => {
         this.club = club;
+
+        this.clubId &&
+          this.clubService.getClubOwnership(this.clubId).subscribe({
+            next: (response) => {
+              console.log('Club data:', response);
+              this.isClubOwned = response;
+            },
+          });
       });
     } else {
       console.error('clubId is null');
@@ -57,6 +69,50 @@ export class EditClubComponent implements OnInit {
       this.countries.set(data);
     });
   }
+
+  
+  // deleteClub() {
+  //   if (this.clubId) {
+  //     this.clubService.deleteClub([this.clubId]).subscribe({
+  //       next: (response) => {
+  //         console.log('Club deleted successfully:', response);
+  //         this.router.navigate(['/clubs']);
+  //       },
+  //       error: (err) => {
+  //         console.error('Error deleting club:', err);
+  //       },
+  //     });
+  //   }
+  // }
+
+  //for deleteing club
+    deleteClub() {
+      const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+        width: '350px',
+        data: {
+          title: 'Confirm Delete',
+          message: 'Are you sure you want to delete this club?',
+          confirmText: 'Delete',
+          cancelText: 'Cancel',
+        },
+      });
+  
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result) {
+          if (this.clubId) {
+            this.clubService.deleteClub([this.clubId]).subscribe({
+              next: (response) => {
+                console.log('Club deleted successfully:', response);
+                this.router.navigate(['/clubs']);
+              },
+              error: (err) => {
+                console.error('Error deleting club:', err);
+              },
+            });
+          }
+        }
+      });
+    }
 
   saveClub() {
     if (this.clubId) {

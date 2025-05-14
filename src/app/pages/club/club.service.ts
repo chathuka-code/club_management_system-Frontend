@@ -55,6 +55,23 @@ export class ClubService {
     });
   }
 
+  getClubOwnership = (clubId: string): Observable<Boolean> => {
+    return this.http
+      .get<Boolean>(`${this.apiUrl}/by-club/${clubId}`, {
+        headers: this.headers,
+      })
+      .pipe(
+        map((response) => {
+          console.log('Club ownership:', response);
+          return response;
+        }),
+        catchError((err) => {
+          console.error('Error fetching club ownership:', err);
+          return throwError(() => err);
+        })
+      );
+  };
+
   //for fetching
   getAllClubs(): Observable<Club[]> {
     return this.http

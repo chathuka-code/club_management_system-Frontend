@@ -31,4 +31,19 @@
   ::placeholder {
     color: rgba(0, 0, 0, 0.6);
   }
+  .button-container {
+    display: flex;
+    gap: 12px; /* Space between buttons */
+    align-items: center; /* Aligns buttons vertically */
+    margin-left: 1100px;
+  }
+  .delete-button-row button {
+    background-color: #ca0e0e !important; /* Green background */
+    color: white !important; /* White text for better contrast */
+  }
+  .create-button-row,
+  .delete-button-row {
+    display: inline-block; /* Ensures both elements behave like inline elements */
+    
+  }
   

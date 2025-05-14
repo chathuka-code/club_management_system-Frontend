@@ -1,26 +1,38 @@
+<div class="button-container">
+  <span class="delete-button-row">
+    <button
+      *ngIf="isTeamOwned"
+      mat-flat-button
+      color="warn"
+      (click)="deleteTeam()"
+    >
+      Delete
+    </button>
+  </span>
+</div>
 <div class="form-container">
-    <mat-form-field appearance="outline">
-      <mat-label>Team Name</mat-label>
-      <input
-        matInput
-        placeholder="Enter Team Name"
-        [(ngModel)]="team.teamName"
-        required
-        disabled="true"
-      />
-    </mat-form-field>
-  
-    <mat-form-field appearance="outline">
-      <mat-label>Sport Category</mat-label>
-      <input
-        matInput
-        placeholder="Enter Sport Category"
-        [(ngModel)]="team.sportCategory"
-      />
-    </mat-form-field>
-  
-    <div class="example-button-row">
-      <button mat-flat-button (click)="saveTeam()">Save</button>
-    </div>
+  <mat-form-field appearance="outline">
+    <mat-label>Team Name</mat-label>
+    <input
+      matInput
+      placeholder="Enter Team Name"
+      [(ngModel)]="team.teamName"
+      required
+    />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Sport Category</mat-label>
+    <input
+      matInput
+      placeholder="Enter Sport Category"
+      [(ngModel)]="team.sportCategory"
+    />
+  </mat-form-field>
+
+  <div class="example-button-row">
+    <button *ngIf="isTeamOwned" mat-flat-button (click)="saveTeam()">
+      Save
+    </button>
   </div>
-  
+</div>

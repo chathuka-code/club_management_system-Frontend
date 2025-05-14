@@ -8,6 +8,8 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FieldService, Field } from '../field.service';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmationDialogComponent } from '../../../components/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
   selector: 'app-edit-field',
@@ -27,6 +29,7 @@ export class EditFieldComponent implements OnInit {
   private fieldService = inject(FieldService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private dialog = inject(MatDialog);
 
   fieldId: string | null = null;
   field: Field = {
@@ -40,6 +43,7 @@ export class EditFieldComponent implements OnInit {
     clubId: '',
     isDeleted: false,
   };
+  isFieldOwned: Boolean = false;
 
   ngOnInit() {
     this.route.paramMap.subscribe((params) => {
@@ -50,6 +54,13 @@ export class EditFieldComponent implements OnInit {
     if (this.fieldId) {
       this.fieldService.getFieldById(this.fieldId).subscribe((field) => {
         this.field = field;
+
+        this.fieldId && this.fieldService.getFieldOwnership(this.fieldId).subscribe({
+          next: (response) => {
+            console.log('Field data:', response);
+            this.isFieldOwned = response;
+          },
+        });
       });
     } else {
       console.error('fieldId is null');
@@ -65,5 +76,34 @@ export class EditFieldComponent implements OnInit {
     } else {
       console.error('fieldId is null');
     }
+  }
+
+  //for deleteing field
+  deleteField() {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '350px',
+      data: {
+        title: 'Confirm Delete',
+        message: 'Are you sure you want to delete this field?',
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        if (this.fieldId) {
+          this.fieldService.deleteFields([this.fieldId]).subscribe({
+            next: (response) => {
+              console.log('Field deleted successfully:', response);
+              this.router.navigate(['/fields']);
+            },
+            error: (err) => {
+              console.error('Error deleting field:', err);
+            },
+          });
+        }
+      }
+    });
   }
 }

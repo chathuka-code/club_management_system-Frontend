@@ -35,6 +35,7 @@ export interface TableColumn {
 export class TableComponent {
   @Input() columns: { key: string; label: string }[] = [];
   @Input() data: any[] = [];
+  @Input() isEditEnabled: boolean = true;
 
   @Output() selectedRows = new EventEmitter<any[]>();
   @Output() editClicked = new EventEmitter<any>();
@@ -44,9 +45,15 @@ export class TableComponent {
   dataSource!: MatTableDataSource<any>;
 
   ngOnChanges() {
-    this.displayedColumns = ['select', ...this.columns.map((col) => col.key),'actions'];
-    this.dataSource = new MatTableDataSource(this.data);
+  this.displayedColumns = ['select', ...this.columns.map((col) => col.key)];
+
+  if (this.isEditEnabled) {
+    this.displayedColumns.push('actions');
   }
+
+  this.dataSource = new MatTableDataSource(this.data);
+}
+
 
   toggleAllRows(event: any) {
     const checked = event.checked;

@@ -167,4 +167,49 @@ export class ClubService {
         })
       );
   }
+
+  //for getting club admins
+  getClubAdmins(clubId: string): Observable<any[]> {
+    return this.http
+      .get<any[]>(`${this.apiUrl}/by-club/${clubId}/clubAdmins`, {
+        headers: this.headers,
+      })
+      .pipe(
+        tap((admins) => {
+          console.log('Fetched club admins:', admins);
+        }),
+        catchError((err) => {
+          console.error('Error fetching club admins:', err);
+          return throwError(() => err);
+        })
+      );
+  }
+
+  //for deleting club admins
+  deleteClubAdmins(
+    userIds: string[],
+    clubId: string
+  ): Observable<Boolean> {
+    return this.http
+      .request<Boolean>('delete', `${this.apiUrl}/by-club/${clubId}/clubAdmins`, {
+        body: userIds,
+        headers: this.headers,
+      })
+      .pipe(
+        tap((response) => {
+          console.log('Deleted club admins successfully:', response);
+          this.snackBar.open('Club admins deleted successfully!', 'Close', {
+            duration: 3000,
+          });
+        }),
+        catchError((err) => {
+          console.error('Error deleting club admins:', err);
+          this.snackBar.open('Failed to delete club admins', 'Close', {
+            duration: 3000,
+            panelClass: ['error-snackbar'],
+          });
+          return throwError(() => err);
+        })
+      );
+    }
 }

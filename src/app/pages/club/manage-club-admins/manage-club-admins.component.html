@@ -1,0 +1,14 @@
+<div class="button-container">
+  <span class="delete-button-row">
+    <button mat-flat-button color="warn" (click)="handleDelete()">
+      Delete
+    </button>
+  </span>
+</div>
+
+<app-table
+  [columns]="userColumns"
+  [data]="userData()"
+  [isEditEnabled]="false"
+  (selectedRows)="handleSelectedRows($event)"
+></app-table>

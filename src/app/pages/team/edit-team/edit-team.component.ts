@@ -101,4 +101,11 @@ export class EditTeamComponent implements OnInit {
       }
     });
   }
+
+  deleteTeamManagers() {
+    this.router.navigate([
+      '/chooseClubforTeam/teams/editTeam/teamManagers',
+      this.teamId,
+    ]);
+  }
 }

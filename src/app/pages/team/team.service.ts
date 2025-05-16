@@ -137,7 +137,7 @@ export class TeamService {
         },
         error: (err) => {
           console.error('Error creating team:', err);
-          this.snackBar.open('Failed to create team', 'Close', {
+          this.snackBar.open(err.error.message, 'Close', {
             duration: 3000,
             panelClass: ['error-snackbar'],
           });
@@ -168,4 +168,49 @@ export class TeamService {
         })
       );
   }
-}
+
+  // for getting team managers
+  getTeamManagers(teamId: string): Observable<any[]> {
+    return this.http
+      .get<any[]>(`${this.apiUrl}/by-team/${teamId}/teamManagers`, {
+        headers: this.headers,
+      })
+      .pipe(
+        tap((managers) => {
+          console.log('Fetched team managers:', managers);
+        }),
+        catchError((err) => {
+          console.error('Error fetching team managers:', err);
+          return throwError(() => err);
+        })
+      );
+  }
+
+  // for deleting team managers
+  deleteTeamManagers(
+    userIds: string[],
+    teamId: string
+  ): Observable<Boolean> {
+    return this.http
+      .delete<Boolean>(`${this.apiUrl}/by-team/${teamId}/teamManagers`, {
+        headers: this.headers,
+        body: userIds,
+      })
+      .pipe(
+        tap((response) => {
+          console.log('Deleted team managers successfully:', response);
+          this.snackBar.open('Team managers deleted successfully!', 'Close', {
+            duration: 3000,
+          });
+        }),
+        catchError((err) => {
+          console.error('Error deleting team managers:', err);
+          this.snackBar.open('Failed to delete team managers', 'Close', {
+            duration: 3000,
+            panelClass: ['error-snackbar'],
+          });
+          return throwError(() => err);
+        })
+      );
+    }
+  }

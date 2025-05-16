@@ -22,6 +22,9 @@ import { LoginComponent } from './pages/auth/login/login.component';
 import { AuthGuard } from './pages/auth/auth.guard';
 import { LayoutComponent } from './layout/layout.component';
 import { SignupComponent } from './pages/auth/signup/signup.component';
+import { ManageClubAdminsComponent } from './pages/club/manage-club-admins/manage-club-admins.component';
+import { ManageFieldAdminsComponent } from './pages/field/manage-field-admins/manage-field-admins.component';
+import { ManageTeamManagersComponent } from './pages/team/manage-team-managers/manage-team-managers.component';
 
 export const routes: Routes = [
   {
@@ -51,6 +54,10 @@ export const routes: Routes = [
         component: EditClubComponent,
       },
       {
+        path: 'clubs/editClub/manageClubAdmins/:clubId',
+        component: ManageClubAdminsComponent,
+      },
+      {
         path: 'chooseClub',
         component: ClubCardComponent,
       },
@@ -67,6 +74,10 @@ export const routes: Routes = [
         component: EditFieldComponent,
       },
       {
+        path: 'chooseClub/fields/editField/manageFieldAdmins/:fieldId',
+        component: ManageFieldAdminsComponent,
+      },
+      {
         path: 'chooseClubforTeam/teams/createTeam/:clubId',
         component: CreateTeamComponent,
       },
@@ -81,6 +92,10 @@ export const routes: Routes = [
       {
         path: 'chooseClubforTeam/teams/editTeam/:teamId',
         component: EditTeamComponent,
+      },
+      {
+        path: 'chooseClubforTeam/teams/editTeam/teamManagers/:teamId',
+        component: ManageTeamManagersComponent,
       },
       {
         path: 'users/createUser',

@@ -37,12 +37,11 @@
     align-items: center; /* Aligns buttons vertically */
     margin-left: 1100px;
   }
-  .delete-button-row button {
-    background-color: #ca0e0e !important; /* Green background */
+  .clubadmin-button-row button {
     color: white !important; /* White text for better contrast */
   }
   .create-button-row,
-  .delete-button-row {
+  .clubadmin-button-row {
     display: inline-block; /* Ensures both elements behave like inline elements */
     
   }

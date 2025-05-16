@@ -70,7 +70,6 @@ export class EditClubComponent implements OnInit {
     });
   }
 
-  
   // deleteClub() {
   //   if (this.clubId) {
   //     this.clubService.deleteClub([this.clubId]).subscribe({
@@ -86,33 +85,33 @@ export class EditClubComponent implements OnInit {
   // }
 
   //for deleteing club
-    deleteClub() {
-      const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-        width: '350px',
-        data: {
-          title: 'Confirm Delete',
-          message: 'Are you sure you want to delete this club?',
-          confirmText: 'Delete',
-          cancelText: 'Cancel',
-        },
-      });
-  
-      dialogRef.afterClosed().subscribe((result) => {
-        if (result) {
-          if (this.clubId) {
-            this.clubService.deleteClub([this.clubId]).subscribe({
-              next: (response) => {
-                console.log('Club deleted successfully:', response);
-                this.router.navigate(['/clubs']);
-              },
-              error: (err) => {
-                console.error('Error deleting club:', err);
-              },
-            });
-          }
+  deleteClub() {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      width: '350px',
+      data: {
+        title: 'Confirm Delete',
+        message: 'Are you sure you want to delete this club?',
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        if (this.clubId) {
+          this.clubService.deleteClub([this.clubId]).subscribe({
+            next: (response) => {
+              console.log('Club deleted successfully:', response);
+              this.router.navigate(['/clubs']);
+            },
+            error: (err) => {
+              console.error('Error deleting club:', err);
+            },
+          });
         }
-      });
-    }
+      }
+    });
+  }
 
   saveClub() {
     if (this.clubId) {
@@ -126,5 +125,9 @@ export class EditClubComponent implements OnInit {
         },
       });
     }
+  }
+
+  deleteClubAdmins() {
+    this.router.navigate(['/clubs/editClub/manageClubAdmins', this.clubId]);
   }
 }

@@ -114,7 +114,6 @@ export class FieldService {
       );
   }
 
-
   getFieldOwnership = (fieldId: string): Observable<Boolean> => {
     return this.http
       .get<Boolean>(`${this.apiUrl}/by-field/${fieldId}`, {
@@ -249,4 +248,49 @@ export class FieldService {
       })
     );
   }
+
+  // for getting field admins
+  getFieldAdmins(fieldId: string): Observable<any[]> {
+    return this.http
+      .get<any[]>(`${this.apiUrl}/by-field/${fieldId}/fieldAdmins`, {
+        headers: this.headers,
+      })
+      .pipe(
+        tap((admins) => {
+          console.log('Fetched field admins:', admins);
+        }),
+        catchError((err) => {
+          console.error('Error fetching field admins:', err);
+          return throwError(() => err);
+        })
+      );
+  }
+
+  //for deleting field admins
+  deleteFieldAdmins(
+    userIds: string[],
+    fieldId: string
+  ): Observable<Boolean> {
+    return this.http
+      .delete<Boolean>(
+        `${this.apiUrl}/by-field/${fieldId}/fieldAdmins`,
+        { headers: this.headers, body: userIds }
+      )
+      .pipe(
+        tap((response) => {
+          console.log('Deleted field admins successfully:', response);
+          this.snackBar.open('Field admins deleted successfully!', 'Close', {
+            duration: 3000,
+          });
+        }),
+        catchError((err) => {
+          console.error('Error deleting field admins:', err);
+          this.snackBar.open('Failed to delete field admins', 'Close', {
+            duration: 3000,
+            panelClass: ['error-snackbar'],
+          });
+          return throwError(() => err);
+        })
+      );
+    }
 }

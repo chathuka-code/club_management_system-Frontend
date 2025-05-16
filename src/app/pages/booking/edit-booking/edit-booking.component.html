@@ -156,7 +156,7 @@
   </div>
   <div class="example-button-row">
     <button
-      *ngIf="!booking.bookingStatus && isBookingOwned"
+      *ngIf="!booking.bookingStatus && isBookingOwned && !(currentRole === 'individual-user')"
       mat-flat-button
       class="approve-button"
       (click)="approveBooking()"

@@ -55,12 +55,13 @@ export class EditFieldComponent implements OnInit {
       this.fieldService.getFieldById(this.fieldId).subscribe((field) => {
         this.field = field;
 
-        this.fieldId && this.fieldService.getFieldOwnership(this.fieldId).subscribe({
-          next: (response) => {
-            console.log('Field data:', response);
-            this.isFieldOwned = response;
-          },
-        });
+        this.fieldId &&
+          this.fieldService.getFieldOwnership(this.fieldId).subscribe({
+            next: (response) => {
+              console.log('Field data:', response);
+              this.isFieldOwned = response;
+            },
+          });
       });
     } else {
       console.error('fieldId is null');
@@ -105,5 +106,8 @@ export class EditFieldComponent implements OnInit {
         }
       }
     });
+  }
+  deleteFieldAdmins() {
+    this.router.navigate(['/chooseClub/fields/editField/manageFieldAdmins', this.fieldId]);
   }
 }

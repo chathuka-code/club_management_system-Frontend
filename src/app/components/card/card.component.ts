@@ -11,7 +11,7 @@ export class CardComponent {
   @Input() club!: {
     clubName: string;
     countryCode: string;
-    activatedStatus: 'active' | 'inactive';
+    activatedStatus: boolean;
     description: string;
     logo: string;
   };

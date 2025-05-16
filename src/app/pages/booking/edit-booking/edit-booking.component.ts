@@ -17,6 +17,7 @@ import { FieldService, FieldPart } from '../../field/field.service';
 import { catchError, of, timeout } from 'rxjs';
 import { ConfirmationDialogComponent } from '../../../components/confirmation-dialog/confirmation-dialog.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-edit-booking',
@@ -48,6 +49,7 @@ export class EditBookingComponent implements OnInit {
 
   private bookingService = inject(BookingService);
   private fieldService = inject(FieldService);
+  private authService = inject(AuthService);
   private teamService = inject(TeamService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -60,6 +62,7 @@ export class EditBookingComponent implements OnInit {
   isOverlapping: boolean = false;
   isTimeRangeValid: boolean = true;
   isBookingOwned: Boolean = false;
+  currentRole: string = '';
 
   bookableFields: FieldPart[] = [];
   teams: Team[] = [];
@@ -122,6 +125,11 @@ export class EditBookingComponent implements OnInit {
           },
         });
       });
+
+    this.authService.currentRole$.subscribe((role) => {
+      this.currentRole = role?.type || '';
+    });
+    console.log('Current role:', this.currentRole);
 
     const date = this.convertFromLocalISO('2025-04-10');
     console.log('converted date:', date);

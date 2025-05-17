@@ -45,6 +45,28 @@ export class TeamService {
       );
   }
 
+  //for getting all teams
+  getAllTeamsEntire(): Observable<Team[]> {
+    return this.http
+      .get<Team[]>(`${this.apiUrl}/getAllTeams`, {
+        headers: this.headers,
+      })
+      .pipe(
+        map((response) => {
+          console.log('Teams:', response);
+          return response;
+        }),
+        catchError((err) => {
+          console.error('Error fetching teams:', err);
+          this.snackBar.open('Failed to fetch teams', 'Close', {
+            duration: 3000,
+            panelClass: ['error-snackbar'],
+          });
+          return throwError(() => err); // Re-throw the error
+        })
+      );
+  }
+
   // For getting a team by ID
   getTeamById(teamId: string): Observable<Team> {
     return this.http

@@ -14,6 +14,7 @@ import { BookingService, Booking } from '../booking.service';
 import { Team, TeamService } from '../../team/team.service';
 import { FieldService, FieldPart } from '../../field/field.service';
 import { catchError, of, timeout } from 'rxjs';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-create-booking',
@@ -47,6 +48,7 @@ export class CreateBookingComponent implements OnInit {
   private teamService = inject(TeamService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private authService = inject(AuthService);
 
   today = new Date();
   selectedPartId: string | null = null;
@@ -54,9 +56,11 @@ export class CreateBookingComponent implements OnInit {
   isOverlapping: boolean = false;
   isTimeRangeValid: boolean = false;
   userId: string | null = null;
+  currentRole: string = '';
+  idUser: string = '';
 
   bookableFields: FieldPart[] = [];
-  teams: Team[] = [];
+  teams: any[] = [];
   fieldSection_01: FieldPart[] = [];
   fieldSection_02: FieldPart[] = [];
   fieldSection_03: FieldPart[] = [];
@@ -99,6 +103,39 @@ export class CreateBookingComponent implements OnInit {
           this.separateBookableFieldsIntoSections(); //call the method to separate fields into sections
         },
       });
+
+    this.authService.currentRole$.subscribe((role) => {
+      this.currentRole = role?.type || '';
+      this.idUser = role?.id || '';
+
+      if (this.currentRole === 'super-admin') {
+        this.teamService.getAllTeamsEntire().subscribe((teams) => {
+          this.teams = teams.map((team) => ({
+            name: team.teamName,
+            id: team['id'],
+          }));
+          console.log('Teams:', teams);
+        });
+      } else if (this.currentRole === 'club-admin') {
+        this.teamService.getAllTeams(this.idUser).subscribe((teams) => {
+          this.teams = teams.map((team) => ({
+            name: team.teamName,
+            id: team['id'],
+          }));
+          console.log('Teams:', teams);
+        });
+      } else if (this.currentRole === 'team-manager') {
+        this.teamService.getTeamById(this.idUser).subscribe((team: Team) => {
+          this.teams = [
+            {
+              name: team.teamName,
+              id: team['id'],
+            },
+          ];
+          console.log('Teams:', this.teams);
+        });
+      }
+    });
   }
 
   //seperate bookable fields into sections

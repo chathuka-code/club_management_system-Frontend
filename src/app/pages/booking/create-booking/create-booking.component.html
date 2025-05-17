@@ -147,6 +147,15 @@
   <div *ngIf="!isTimeRangeValid" class="error-message">
     *The selected time range is invalid.
   </div>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Link Team</mat-label>
+    <mat-select [(ngModel)]="booking.teamId">
+      <mat-option *ngFor="let team of teams" [value]="team.id">
+        {{ team.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
   <div class="example-button-row">
     <button
       mat-flat-button

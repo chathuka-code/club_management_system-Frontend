@@ -63,9 +63,10 @@ export class EditBookingComponent implements OnInit {
   isTimeRangeValid: boolean = true;
   isBookingOwned: Boolean = false;
   currentRole: string = '';
+  idUser: string = '';
 
   bookableFields: FieldPart[] = [];
-  teams: Team[] = [];
+  teams: any[] = [];
   fieldSection_01: FieldPart[] = [];
   fieldSection_02: FieldPart[] = [];
   fieldSection_03: FieldPart[] = [];
@@ -128,8 +129,36 @@ export class EditBookingComponent implements OnInit {
 
     this.authService.currentRole$.subscribe((role) => {
       this.currentRole = role?.type || '';
+      this.idUser = role?.id || '';
+
+      if (this.currentRole === 'super-admin') {
+        this.teamService.getAllTeamsEntire().subscribe((teams) => {
+          this.teams = teams.map((team) => ({
+            name: team.teamName,
+            id: team['id'],
+          }));
+          console.log('Teams:', teams);
+        });
+      } else if (this.currentRole === 'club-admin') {
+        this.teamService.getAllTeams(this.idUser).subscribe((teams) => {
+          this.teams = teams.map((team) => ({
+            name: team.teamName,
+            id: team['id'],
+          }));
+          console.log('Teams:', teams);
+        });
+      } else if (this.currentRole === 'team-manager') {
+        this.teamService.getTeamById(this.idUser).subscribe((team: Team) => {
+          this.teams = [
+            {
+              name: team.teamName,
+              id: team['id'],
+            },
+          ];
+          console.log('Teams:', this.teams);
+        });
+      }
     });
-    console.log('Current role:', this.currentRole);
 
     const date = this.convertFromLocalISO('2025-04-10');
     console.log('converted date:', date);

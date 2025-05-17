@@ -187,10 +187,7 @@ export class TeamService {
   }
 
   // for deleting team managers
-  deleteTeamManagers(
-    userIds: string[],
-    teamId: string
-  ): Observable<Boolean> {
+  deleteTeamManagers(userIds: string[], teamId: string): Observable<Boolean> {
     return this.http
       .delete<Boolean>(`${this.apiUrl}/by-team/${teamId}/teamManagers`, {
         headers: this.headers,
@@ -212,5 +209,29 @@ export class TeamService {
           return throwError(() => err);
         })
       );
-    }
   }
+
+  // for adding team managers
+  addTeamManagers(teamId: string, userIds: string[]): Observable<boolean> {
+    return this.http
+      .post<boolean>(`${this.apiUrl}/by-team/${teamId}/teamManagers`, userIds, {
+        headers: this.headers,
+      })
+      .pipe(
+        tap((response) => {
+          console.log('Added team managers successfully:', response);
+          this.snackBar.open('Team managers added successfully!', 'Close', {
+            duration: 3000,
+          });
+        }),
+        catchError((err) => {
+          console.error('Error adding team managers:', err);
+          this.snackBar.open('Failed to add team managers', 'Close', {
+            duration: 3000,
+            panelClass: ['error-snackbar'],
+          });
+          return throwError(() => err);
+        })
+      );
+  }
+}

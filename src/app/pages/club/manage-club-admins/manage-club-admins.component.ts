@@ -8,6 +8,7 @@ import { TableColumn } from '../../../components/table/table.component';
 import { ClubService } from '../club.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../../../components/confirmation-dialog/confirmation-dialog.component';
+import { AddClubAdminDialogComponent } from '../add-club-admin-dialog/add-club-admin-dialog.component';
 
 @Component({
   selector: 'app-manage-club-admins',
@@ -47,6 +48,28 @@ export class ManageClubAdminsComponent implements OnInit {
   handleSelectedRows(selectedRows: any[]) {
     this.selectedRowIds = selectedRows.map((row) => row.id);
     console.log('Selected rows:', this.selectedRowIds);
+  }
+
+  openUsersDialog(): void {
+    const dialogRef = this.dialog.open(AddClubAdminDialogComponent, {
+      data: {
+        usersEliminated: this.userData().map((user) => user.id),
+        clubId: this.clubId,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.clubId &&
+          this.clubService
+            .getClubAdmins(this.clubId)
+            .subscribe((users: any[]) => {
+              this.userData.set(users);
+            });
+      } else {
+        console.log('Dialog was canceled');
+      }
+    });
   }
 
   handleDelete() {

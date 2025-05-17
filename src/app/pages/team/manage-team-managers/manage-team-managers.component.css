@@ -1,5 +1,4 @@
 .create-button-row button {
-  background-color: #008000 !important; /* Green background */
   color: white !important; /* White text for better contrast */
 }
 
@@ -18,5 +17,4 @@
 .create-button-row,
 .delete-button-row {
   display: inline-block; /* Ensures both elements behave like inline elements */
-  
 }

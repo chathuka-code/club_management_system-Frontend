@@ -1,0 +1,19 @@
+<h2 mat-dialog-title>Select Users For Team Manager</h2>
+
+<mat-dialog-content>
+  <div class="user-list">
+    <div *ngFor="let user of filteredUsers()" class="user-row">
+      <mat-checkbox
+        [checked]="selectedRowIds.includes(user.id!)"
+        (change)="toggleUserSelection(user.id!)"
+      >
+        {{ user.firstName }} {{ user.lastName }} — {{ user.email }}
+      </mat-checkbox>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button color="primary" (click)="onSave()">Save</button>
+</mat-dialog-actions>

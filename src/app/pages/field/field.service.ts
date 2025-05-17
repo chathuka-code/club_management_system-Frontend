@@ -267,15 +267,12 @@ export class FieldService {
   }
 
   //for deleting field admins
-  deleteFieldAdmins(
-    userIds: string[],
-    fieldId: string
-  ): Observable<Boolean> {
+  deleteFieldAdmins(userIds: string[], fieldId: string): Observable<Boolean> {
     return this.http
-      .delete<Boolean>(
-        `${this.apiUrl}/by-field/${fieldId}/fieldAdmins`,
-        { headers: this.headers, body: userIds }
-      )
+      .delete<Boolean>(`${this.apiUrl}/by-field/${fieldId}/fieldAdmins`, {
+        headers: this.headers,
+        body: userIds,
+      })
       .pipe(
         tap((response) => {
           console.log('Deleted field admins successfully:', response);
@@ -292,5 +289,33 @@ export class FieldService {
           return throwError(() => err);
         })
       );
-    }
+  }
+
+  // for adding field admins
+  addFieldAdmins(fieldId: string, userIds: string[]): Observable<boolean> {
+    return this.http
+      .post<boolean>(
+        `${this.apiUrl}/by-field/${fieldId}/fieldAdmins`,
+        userIds,
+        {
+          headers: this.headers,
+        }
+      )
+      .pipe(
+        tap((response) => {
+          console.log('Added field admins successfully:', response);
+          this.snackBar.open('Field admins added successfully!', 'Close', {
+            duration: 3000,
+          });
+        }),
+        catchError((err) => {
+          console.error('Error adding field admins:', err);
+          this.snackBar.open('Failed to add field admins', 'Close', {
+            duration: 3000,
+            panelClass: ['error-snackbar'],
+          });
+          return throwError(() => err);
+        })
+      );
+  }
 }

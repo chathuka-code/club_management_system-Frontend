@@ -8,6 +8,7 @@ import { TableColumn } from '../../../components/table/table.component';
 import { TeamService } from '../team.service';
 import { ConfirmationDialogComponent } from '../../../components/confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { AddTeamManagerDialogComponent } from '../add-team-manager-dialog/add-team-manager-dialog.component';
 
 @Component({
   selector: 'app-manage-team-managers',
@@ -50,6 +51,28 @@ export class ManageTeamManagersComponent implements OnInit {
     this.selectedRowIds = selectedRows.map((row) => row.id);
     console.log('Selected rows:', this.selectedRowIds);
   }
+
+  openUsersDialog(): void {
+  const dialogRef = this.dialog.open(AddTeamManagerDialogComponent, {
+    data: {
+      usersEliminated: this.userData().map((user) => user.id),
+      teamId: this.teamId,
+    },
+  });
+
+  dialogRef.afterClosed().subscribe((result) => {
+    if (result) {
+      this.teamId &&
+        this.teamService
+          .getTeamManagers(this.teamId)
+          .subscribe((users: any[]) => {
+            this.userData.set(users);
+          });
+    } else {
+      console.log('Dialog was canceled');
+    }
+  });
+}
 
   handleDelete() {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {

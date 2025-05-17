@@ -186,15 +186,16 @@ export class ClubService {
   }
 
   //for deleting club admins
-  deleteClubAdmins(
-    userIds: string[],
-    clubId: string
-  ): Observable<Boolean> {
+  deleteClubAdmins(userIds: string[], clubId: string): Observable<Boolean> {
     return this.http
-      .request<Boolean>('delete', `${this.apiUrl}/by-club/${clubId}/clubAdmins`, {
-        body: userIds,
-        headers: this.headers,
-      })
+      .request<Boolean>(
+        'delete',
+        `${this.apiUrl}/by-club/${clubId}/clubAdmins`,
+        {
+          body: userIds,
+          headers: this.headers,
+        }
+      )
       .pipe(
         tap((response) => {
           console.log('Deleted club admins successfully:', response);
@@ -211,5 +212,29 @@ export class ClubService {
           return throwError(() => err);
         })
       );
-    }
+  }
+
+  //for adding club admins
+  addClubAdmins(clubId: string, userIds: string[]): Observable<Boolean> {
+    return this.http
+      .post<Boolean>(`${this.apiUrl}/by-club/${clubId}/clubAdmins`, userIds, {
+        headers: this.headers,
+      })
+      .pipe(
+        tap((response) => {
+          console.log('Added club admins successfully:', response);
+          this.snackBar.open('Club admins added successfully!', 'Close', {
+            duration: 3000,
+          });
+        }),
+        catchError((err) => {
+          console.error('Error adding club admins:', err);
+          this.snackBar.open('Failed to add club admins', 'Close', {
+            duration: 3000,
+            panelClass: ['error-snackbar'],
+          });
+          return throwError(() => err);
+        })
+      );
+  }
 }

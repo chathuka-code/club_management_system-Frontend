@@ -8,6 +8,7 @@ import { TableColumn } from '../../../components/table/table.component';
 import { FieldService } from '../field.service';
 import { ConfirmationDialogComponent } from '../../../components/confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { AddFieldAdminDialogComponent } from '../add-field-admin-dialog/add-field-admin-dialog.component';
 
 @Component({
   selector: 'app-manage-field-admins',
@@ -50,6 +51,29 @@ export class ManageFieldAdminsComponent implements OnInit {
     this.selectedRowIds = selectedRows.map((row) => row.id);
     console.log('Selected rows:', this.selectedRowIds);
   }
+
+  openUsersDialog(): void {
+  const dialogRef = this.dialog.open(AddFieldAdminDialogComponent, {
+    data: {
+      usersEliminated: this.userData().map((user) => user.id),
+      fieldId: this.fieldId,
+    },
+  });
+
+  dialogRef.afterClosed().subscribe((result) => {
+    if (result) {
+      this.fieldId &&
+        this.fieldService
+          .getFieldAdmins(this.fieldId)
+          .subscribe((users: any[]) => {
+            this.userData.set(users);
+          });
+    } else {
+      console.log('Dialog was canceled');
+    }
+  });
+}
+
 
   handleDelete() {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {

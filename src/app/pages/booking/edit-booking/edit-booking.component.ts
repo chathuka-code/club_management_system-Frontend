@@ -359,7 +359,7 @@ export class EditBookingComponent implements OnInit {
           const overlappingFieldPartIds = response
             .filter((existingBooking) => {
               // Only consider bookings with status "Approved"
-              if (existingBooking.bookingStatus !== 'Approved') {
+              if (!existingBooking.bookingStatus) {
                 return false;
               }
 

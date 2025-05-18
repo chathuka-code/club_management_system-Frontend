@@ -88,6 +88,7 @@ export class BookingService {
             fieldPartId: booking.fieldPartId,
             startTime: booking.startTime,
             endTime: booking.endTime,
+            bookingStatus: booking.bookingStatus,
           }))
         )
       );

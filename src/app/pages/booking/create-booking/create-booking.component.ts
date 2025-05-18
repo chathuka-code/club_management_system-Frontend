@@ -269,7 +269,7 @@ export class CreateBookingComponent implements OnInit {
           const overlappingFieldPartIds = response
             .filter((existingBooking) => {
               // Only consider bookings with status "Approved"
-              if (existingBooking.bookingStatus !== 'Approved') {
+              if (!existingBooking.bookingStatus) {
                 return false;
               }
               //convert times to comparable values
@@ -287,7 +287,7 @@ export class CreateBookingComponent implements OnInit {
                 newStartTime < existingEndTime && newEndTime > existingStartTime
               );
             })
-            .map((booking) => booking.fieldPartId);
+            .map((booking) => booking['fieldPartId']);
 
           console.log('Overlapping fieldPartIds:', overlappingFieldPartIds);
           if (overlappingFieldPartIds.length === 0) {

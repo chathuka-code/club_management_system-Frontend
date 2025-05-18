@@ -37,7 +37,6 @@ export class ClubListComponent implements OnInit {
     { key: 'countryCode', label: 'Country Code' },
     { key: 'activatedStatus', label: 'Activated Status' },
     { key: 'description', label: 'Description' },
-    { key: 'logo', label: 'Logo' },
   ];
 
   navigateToCreateClub() {

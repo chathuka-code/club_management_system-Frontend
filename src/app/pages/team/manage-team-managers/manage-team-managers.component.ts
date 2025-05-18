@@ -9,6 +9,7 @@ import { TeamService } from '../team.service';
 import { ConfirmationDialogComponent } from '../../../components/confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AddTeamManagerDialogComponent } from '../add-team-manager-dialog/add-team-manager-dialog.component';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-manage-team-managers',
@@ -22,10 +23,12 @@ export class ManageTeamManagersComponent implements OnInit {
   private router = inject(Router);
   private teamService = inject(TeamService);
   private dialog = inject(MatDialog);
+  private authService = inject(AuthService);
 
   teamId: string | null = null;
   selectedRowIds: string[] = [];
   userData = signal<any[]>([]);
+  currentRole: string = '';
 
   ngOnInit() {
     this.route.paramMap.subscribe((params) => {
@@ -39,6 +42,10 @@ export class ManageTeamManagersComponent implements OnInit {
         .subscribe((users: any[]) => {
           this.userData.set(users);
         });
+
+    this.authService.currentRole$.subscribe((role) => {
+      this.currentRole = role?.type || '';
+    });
   }
 
   userColumns: TableColumn[] = [
@@ -53,26 +60,26 @@ export class ManageTeamManagersComponent implements OnInit {
   }
 
   openUsersDialog(): void {
-  const dialogRef = this.dialog.open(AddTeamManagerDialogComponent, {
-    data: {
-      usersEliminated: this.userData().map((user) => user.id),
-      teamId: this.teamId,
-    },
-  });
+    const dialogRef = this.dialog.open(AddTeamManagerDialogComponent, {
+      data: {
+        usersEliminated: this.userData().map((user) => user.id),
+        teamId: this.teamId,
+      },
+    });
 
-  dialogRef.afterClosed().subscribe((result) => {
-    if (result) {
-      this.teamId &&
-        this.teamService
-          .getTeamManagers(this.teamId)
-          .subscribe((users: any[]) => {
-            this.userData.set(users);
-          });
-    } else {
-      console.log('Dialog was canceled');
-    }
-  });
-}
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.teamId &&
+          this.teamService
+            .getTeamManagers(this.teamId)
+            .subscribe((users: any[]) => {
+              this.userData.set(users);
+            });
+      } else {
+        console.log('Dialog was canceled');
+      }
+    });
+  }
 
   handleDelete() {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {

@@ -92,39 +92,25 @@ export class ClubService {
   }
 
   //for soft deleting a club
-  deleteClub(clubIds: string[]): Observable<void> {
-    // Convert array of IDs to array of observables
-    const deletionObservables = clubIds.map((id) =>
-      this.http
-        .patch(
-          `${this.apiUrl}/${id}`,
-          { isDeleted: true },
-          { headers: this.headers }
-        )
-        .pipe(
-          tap(() => {
-            console.log(`Club with ID ${id} marked as deleted.`);
-            this.snackBar.open(
-              `Club with ID ${id} deleted successfully!`,
-              'Close',
-              { duration: 3000 }
-            );
-          }),
-          catchError((err) => {
-            console.error(`Error deleting club with ID ${id}:`, err);
-            this.snackBar.open(`Failed to delete club with ID ${id}`, 'Close', {
-              duration: 3000,
-              panelClass: ['error-snackbar'],
-            });
-            return throwError(() => err); // Re-throw the error
-          })
-        )
-    );
-
-    // Execute all deletions in parallel and return a single observable
-    return forkJoin(deletionObservables).pipe(
-      map(() => undefined) // Convert to Observable<void>
-    );
+  deleteClub(clubIds: string[]): Observable<Boolean> {
+    return this.http
+      .patch<Boolean>(`${this.apiUrl}`, clubIds, { headers: this.headers })
+      .pipe(
+        tap(() => {
+          console.log('Clubs marked as deleted successfully');
+          this.snackBar.open('Clubs deleted successfully!', 'Close', {
+            duration: 3000,
+          });
+        }),
+        catchError((err) => {
+          console.error('Error deleting clubs:', err);
+          this.snackBar.open('Failed to delete clubs', 'Close', {
+            duration: 3000,
+            panelClass: ['error-snackbar'],
+          });
+          return throwError(() => err);
+        })
+      );
   }
 
   //for updating a club
@@ -236,5 +222,12 @@ export class ClubService {
           return throwError(() => err);
         })
       );
+  }
+
+  uploadLogo(formData: FormData): Observable<any> {
+    return this.http.post<any>(
+      'https://localhost:7224/api/photo/upload', // Replace with your correct API endpoint
+      formData
+    );
   }
 }

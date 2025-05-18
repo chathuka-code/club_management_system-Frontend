@@ -18,7 +18,6 @@ import { ClubService, Club } from '../club.service';
     MatButtonModule,
     MatSelectModule,
   ],
-
   templateUrl: './create-club.component.html',
   styleUrl: './create-club.component.css',
 })
@@ -27,41 +26,73 @@ export class CreateClubComponent implements OnInit {
 
   private clubService = inject(ClubService);
 
-  apiUrl = 'http://localhost:3000/clubs';
+  logoFile: File | null = null;
+  logoPreview: string | ArrayBuffer | null = null;
 
   club: Club = {
     clubName: '',
     countryCode: '',
     activatedStatus: true,
     description: '',
-    logo: '',
+    logo: '', // You can ignore this for now; it'll be handled in FormData
     isDeleted: false,
   };
 
   countries = signal<{ name: string; code: string }[]>([]);
 
   ngOnInit() {
-    console.log(localStorage.getItem('auth_data'));
     this.clubService.fetchCountries().subscribe((data) => {
       this.countries.set(data);
     });
   }
 
-  showData() {
-    console.log('Club Data:', this.club);
-  }
-
   createClub() {
-    if (
-      !this.club.clubName ||
-      !this.club.countryCode ||
-      !this.club.activatedStatus
-    ) {
+    if (!this.club.clubName || !this.club.countryCode) {
       alert('Club name and country are required!');
       return;
     }
+
+    if (this.logoFile) {
+      // Step 1: Upload the logo
+      const formData = new FormData();
+      formData.append('file', this.logoFile);
+
+      this.clubService.uploadLogo(formData).subscribe({
+        next: (res) => {
+          // Step 2: Set logo URL returned from backend
+          this.club.logo = res.filePath;
+
+          // Step 3: Proceed to create the club
+          this.createClubWithLogo();
+        },
+        error: (err) => {
+          console.error('Logo upload failed:', err);
+          alert('Failed to upload logo');
+        },
+      });
+    } else {
+      // No logo selected, proceed directly
+      this.createClubWithLogo();
+    }
+  }
+
+  private createClubWithLogo() {
     this.clubService.createClub(this.club);
     this.resetForm();
+  }
+
+  onLogoSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      this.logoFile = input.files[0];
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.logoPreview = reader.result;
+      };
+      reader.readAsDataURL(this.logoFile);
+    }
+
   }
 
   private resetForm() {
@@ -73,5 +104,7 @@ export class CreateClubComponent implements OnInit {
       logo: '',
       isDeleted: false,
     };
+    this.logoFile = null;
+    this.logoPreview = null;
   }
 }

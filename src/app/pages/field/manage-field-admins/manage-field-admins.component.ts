@@ -9,6 +9,7 @@ import { FieldService } from '../field.service';
 import { ConfirmationDialogComponent } from '../../../components/confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AddFieldAdminDialogComponent } from '../add-field-admin-dialog/add-field-admin-dialog.component';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-manage-field-admins',
@@ -22,10 +23,12 @@ export class ManageFieldAdminsComponent implements OnInit {
   private router = inject(Router);
   private fieldService = inject(FieldService);
   private dialog = inject(MatDialog);
+  private authService = inject(AuthService);
 
   fieldId: string | null = null;
   selectedRowIds: string[] = [];
   userData = signal<any[]>([]);
+  currentRole: string = '';
 
   ngOnInit() {
     this.route.paramMap.subscribe((params) => {
@@ -39,6 +42,10 @@ export class ManageFieldAdminsComponent implements OnInit {
         .subscribe((users: any[]) => {
           this.userData.set(users);
         });
+
+    this.authService.currentRole$.subscribe((role) => {
+      this.currentRole = role?.type || '';
+    });
   }
 
   userColumns: TableColumn[] = [
@@ -53,27 +60,26 @@ export class ManageFieldAdminsComponent implements OnInit {
   }
 
   openUsersDialog(): void {
-  const dialogRef = this.dialog.open(AddFieldAdminDialogComponent, {
-    data: {
-      usersEliminated: this.userData().map((user) => user.id),
-      fieldId: this.fieldId,
-    },
-  });
+    const dialogRef = this.dialog.open(AddFieldAdminDialogComponent, {
+      data: {
+        usersEliminated: this.userData().map((user) => user.id),
+        fieldId: this.fieldId,
+      },
+    });
 
-  dialogRef.afterClosed().subscribe((result) => {
-    if (result) {
-      this.fieldId &&
-        this.fieldService
-          .getFieldAdmins(this.fieldId)
-          .subscribe((users: any[]) => {
-            this.userData.set(users);
-          });
-    } else {
-      console.log('Dialog was canceled');
-    }
-  });
-}
-
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.fieldId &&
+          this.fieldService
+            .getFieldAdmins(this.fieldId)
+            .subscribe((users: any[]) => {
+              this.userData.set(users);
+            });
+      } else {
+        console.log('Dialog was canceled');
+      }
+    });
+  }
 
   handleDelete() {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {

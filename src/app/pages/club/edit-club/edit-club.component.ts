@@ -33,6 +33,8 @@ export class EditClubComponent implements OnInit {
   clubId: string | null = null;
   countries = signal<{ name: string; code: string }[]>([]);
   isClubOwned: Boolean = false;
+  logoFile: File | null = null;
+  logoPreview: string | ArrayBuffer | null = null;
 
   club: Club = {
     clubName: '',
@@ -52,6 +54,7 @@ export class EditClubComponent implements OnInit {
     if (this.clubId) {
       this.clubService.getClubById(this.clubId).subscribe((club) => {
         this.club = club;
+        this.logoPreview = 'https://localhost:7224/' + (club.logo ?? null);
 
         this.clubId &&
           this.clubService.getClubOwnership(this.clubId).subscribe({
@@ -69,20 +72,6 @@ export class EditClubComponent implements OnInit {
       this.countries.set(data);
     });
   }
-
-  // deleteClub() {
-  //   if (this.clubId) {
-  //     this.clubService.deleteClub([this.clubId]).subscribe({
-  //       next: (response) => {
-  //         console.log('Club deleted successfully:', response);
-  //         this.router.navigate(['/clubs']);
-  //       },
-  //       error: (err) => {
-  //         console.error('Error deleting club:', err);
-  //       },
-  //     });
-  //   }
-  // }
 
   //for deleteing club
   deleteClub() {
@@ -114,6 +103,36 @@ export class EditClubComponent implements OnInit {
   }
 
   saveClub() {
+    if (!this.club.clubName || !this.club.countryCode) {
+      alert('Club name and country are required!');
+      return;
+    }
+
+    if (this.logoFile) {
+      // Step 1: Upload the logo
+      const formData = new FormData();
+      formData.append('file', this.logoFile);
+
+      this.clubService.uploadLogo(formData).subscribe({
+        next: (res) => {
+          // Step 2: Set logo URL returned from backend
+          this.club.logo = res.filePath;
+
+          // Step 3: Proceed to create the club
+          this.updateClubwithLogo();
+        },
+        error: (err) => {
+          console.error('Logo upload failed:', err);
+          alert('Failed to upload logo');
+        },
+      });
+    } else {
+      // No logo selected, proceed directly
+      this.updateClubwithLogo();
+    }
+  }
+
+  updateClubwithLogo() {
     if (this.clubId) {
       this.clubService.updateClub(this.clubId, this.club).subscribe({
         next: (response) => {
@@ -124,6 +143,19 @@ export class EditClubComponent implements OnInit {
           console.error('Error updating club:', err);
         },
       });
+    }
+  }
+
+  onLogoSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      this.logoFile = input.files[0];
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.logoPreview = reader.result;
+      };
+      reader.readAsDataURL(this.logoFile);
     }
   }
 

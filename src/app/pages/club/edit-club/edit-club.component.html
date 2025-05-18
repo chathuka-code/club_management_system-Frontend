@@ -47,10 +47,18 @@
     ></textarea>
   </mat-form-field>
 
-  <mat-form-field appearance="outline">
-    <mat-label>Logo URL</mat-label>
-    <input matInput name="logo" [(ngModel)]="club.logo" />
-  </mat-form-field>
+  <label for="club-logo">Club Logo :  </label>
+  <input
+    id="club-logo"
+    type="file"
+    (change)="onLogoSelected($event)"
+    accept="image/*"
+  />
+
+  <!-- image preview -->
+  <div *ngIf="logoPreview" class="image-preview">
+    <img [src]="logoPreview" alt="Logo Preview" style="max-width: 100px" />
+  </div>
   <div class="example-button-row">
     <button *ngIf="isClubOwned" mat-flat-button (click)="saveClub()">
       Save

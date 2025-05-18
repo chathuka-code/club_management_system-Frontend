@@ -188,40 +188,26 @@ export class UserService {
     });
   }
 
-  //for deleting a user
-  deleteUser(userIds: string[]): Observable<void> {
-    // Convert array of IDs to array of observables
-    const deletionObservables = userIds.map((id) =>
-      this.http
-        .patch(
-          `${this.apiUrl}/${id}`,
-          { isDeleted: true },
-          { headers: this.headers }
-        )
-        .pipe(
-          tap(() => {
-            console.log(`User with ID ${id} marked as deleted.`);
-            this.snackBar.open(
-              `User with ID ${id} deleted successfully!`,
-              'Close',
-              {
-                duration: 3000,
-              }
-            );
-          }),
-          catchError((err) => {
-            console.error(`Error deleting user with ID ${id}:`, err);
-            this.snackBar.open(`Failed to delete user with ID ${id}`, 'Close', {
-              duration: 3000,
-              panelClass: ['error-snackbar'],
-            });
-            return throwError(() => err); // Re-throw the error
-          })
-        )
-    );
-
-    // Execute all deletions in parallel and return a single observable
-    return forkJoin(deletionObservables).pipe(map(() => undefined)); // Convert to Observable<void>
+  // for soft deleting a user
+  deleteUser(userIds: string[]): Observable<boolean> {
+    return this.http
+      .patch<boolean>(`${this.apiUrl}`, userIds, { headers: this.headers })
+      .pipe(
+        tap(() => {
+          console.log('Users marked as deleted successfully');
+          this.snackBar.open('Users deleted successfully!', 'Close', {
+            duration: 3000,
+          });
+        }),
+        catchError((err) => {
+          console.error('Error deleting users:', err);
+          this.snackBar.open('Failed to delete users', 'Close', {
+            duration: 3000,
+            panelClass: ['error-snackbar'],
+          });
+          return throwError(() => err);
+        })
+      );
   }
 
   //for updating a user and removing roles

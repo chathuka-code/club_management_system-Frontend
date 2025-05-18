@@ -1,11 +1,11 @@
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav mode="side" opened>
     <mat-nav-list>
-      <!-- Modified menu items with flex container -->
       <a
         mat-list-item
         *ngFor="let item of filteredMenuItems"
-        (click)="item.action()"
+        (click)="onMenuItemClick(item)"
+        [class.active]="item.label === activeLabel"
       >
         <div class="menu-item-container">
           <mat-icon class="menu-icon">{{ item.icon }}</mat-icon>
@@ -13,8 +13,12 @@
         </div>
       </a>
 
-      <!-- Logout Button -->
-      <a mat-list-item (click)="logout()" class="logout-button">
+      <a
+        mat-list-item
+        (click)="logout()"
+        [class.active]="'Logout' === activeLabel"
+        class="logout-button"
+      >
         <div class="menu-item-container">
           <mat-icon class="menu-icon">logout</mat-icon>
           <span class="menu-label">Logout</span>

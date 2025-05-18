@@ -9,6 +9,7 @@ import { ClubService } from '../club.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '../../../components/confirmation-dialog/confirmation-dialog.component';
 import { AddClubAdminDialogComponent } from '../add-club-admin-dialog/add-club-admin-dialog.component';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'app-manage-club-admins',
@@ -22,10 +23,12 @@ export class ManageClubAdminsComponent implements OnInit {
   private router = inject(Router);
   private clubService = inject(ClubService);
   private dialog = inject(MatDialog);
+  private authService = inject(AuthService);
 
   clubId: string | null = null;
   selectedRowIds: string[] = [];
   userData = signal<any[]>([]);
+  currentRole: string = '';
 
   ngOnInit() {
     this.route.paramMap.subscribe((params) => {
@@ -37,6 +40,10 @@ export class ManageClubAdminsComponent implements OnInit {
       this.clubService.getClubAdmins(this.clubId).subscribe((users: any[]) => {
         this.userData.set(users);
       });
+
+    this.authService.currentRole$.subscribe((role) => {
+      this.currentRole = role?.type || '';
+    });
   }
 
   userColumns: TableColumn[] = [

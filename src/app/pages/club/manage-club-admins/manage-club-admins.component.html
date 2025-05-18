@@ -1,6 +1,11 @@
 <div class="button-container">
   <span class="create-button-row">
-    <button  mat-flat-button color="primary" (click)="openUsersDialog()">
+    <button
+      *ngIf="currentRole === 'super-admin'"
+      mat-flat-button
+      color="primary"
+      (click)="openUsersDialog()"
+    >
       Add Club Admins
     </button>
   </span>

@@ -46,6 +46,8 @@ export class NavBarComponent implements OnInit, OnDestroy {
   currentRoleType: string = '';
   private roleSubscription!: Subscription;
   selectedRole: string = '';
+  activeLabel: string = '';
+
 
   private authService = inject(AuthService); // Get service via inject()
   private router = inject(Router);
@@ -151,13 +153,16 @@ export class NavBarComponent implements OnInit, OnDestroy {
     });
   }
 
-  
+  onMenuItemClick(item: MenuItem) {
+    this.activeLabel = item.label;
+
+    item.action();
+  }
 
   ngOnDestroy() {
     this.roleSubscription?.unsubscribe();
   }
 
-  // In your component
   // In your component
   navigateToTeams() {
     const club = localStorage.getItem('current_role');

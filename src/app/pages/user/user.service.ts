@@ -249,4 +249,39 @@ export class UserService {
       })
     );
   }
+
+  checkPassword(userId: string, currentPassword: string): Observable<boolean> {
+    const url = `${this.apiUrl}/${userId}/password`;
+    const body = JSON.stringify(currentPassword); // Wrap the string in quotes for valid JSON
+
+    return this.http.post<boolean>(url, body, { headers: this.headers }).pipe(
+      catchError((error) => {
+        console.error('Error checking password:', error);
+        return of(false);
+      })
+    );
+  }
+
+  updateUserProfile(userId: string, user: any): Observable<void> {
+    return this.http
+      .patch<void>(`${this.apiUrl}/userProfile/${userId}`, user, {
+        headers: this.headers,
+      })
+      .pipe(
+        tap(() => {
+          console.log('User profile updated successfully');
+          this.snackBar.open('Profile updated successfully!', 'Close', {
+            duration: 3000,
+          });
+        }),
+        catchError((err) => {
+          console.error('Error updating user profile:', err);
+          this.snackBar.open('Failed to update profile', 'Close', {
+            duration: 3000,
+            panelClass: ['error-snackbar'],
+          });
+          return throwError(() => err);
+        })
+      );
+  }
 }

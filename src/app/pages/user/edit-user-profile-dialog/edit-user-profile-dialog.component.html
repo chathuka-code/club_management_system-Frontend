@@ -1,0 +1,66 @@
+<h2 mat-dialog-title>Edit Profile</h2>
+
+<div mat-dialog-content class="dialog-content">
+  <!-- First Name -->
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>First Name</mat-label>
+    <input
+      matInput
+      placeholder="Enter your first name"
+      [(ngModel)]="firstName"
+      required
+    />
+  </mat-form-field>
+
+  <!-- Last Name -->
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Last Name</mat-label>
+    <input
+      matInput
+      placeholder="Enter your last name"
+      [(ngModel)]="lastName"
+      required
+    />
+  </mat-form-field>
+
+  <!-- Current Password -->
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Current Password</mat-label>
+    <input
+      matInput
+      type="password"
+      placeholder="Enter current password"
+      [(ngModel)]="currentPassword"
+      (ngModelChange)="checkPassword()"
+    />
+  </mat-form-field>
+
+  <!-- New Password -->
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>New Password</mat-label>
+    <input
+      matInput
+      type="password"
+      placeholder="Enter new password"
+      [(ngModel)]="newPassword"
+      [disabled]="!isPasswordCorrect"
+    />
+  </mat-form-field>
+
+  <!-- Confirm Password -->
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Confirm Password</mat-label>
+    <input
+      matInput
+      type="password"
+      placeholder="Re-enter new password"
+      [(ngModel)]="confirmPassword"
+      [disabled]="!isPasswordCorrect"
+    />
+  </mat-form-field>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-flat-button color="primary" (click)="saveProfile()">Save</button>
+</div>

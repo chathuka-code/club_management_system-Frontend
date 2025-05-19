@@ -7,6 +7,8 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { EventClickArg } from '@fullcalendar/core';
 import { BookingService } from '../booking.service';
+import { forkJoin, of } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-calendar',
@@ -60,15 +62,39 @@ export class CalendarComponent implements OnInit {
     if (this.fieldId) {
       this.bookingService
         .getAllBookingsByFieldId(this.fieldId)
-        .subscribe((bookings: any[]) => {
-          this.bookingData.set(bookings);
-            this.calendarOptions.events = bookings.map((booking) => ({
-            id: booking.id,
-            title: booking.bookingTitle,
-            start: `${booking.bookingDate}T${booking.startTime}:00`,
-            end: `${booking.bookingDate}T${booking.endTime}:00`,
-            color: booking.bookingStatus ? '#4a90e2' : '#BE3D2A',
+        .pipe(
+          switchMap((bookings: any[]) => {
+            const checks$ = bookings.map((booking) => {
+              if (booking.bookingStatus) {
+                // Automatically include approved bookings
+                return of({ include: true, booking });
+              } else {
+                // Check ownership for non-approved bookings
+                return this.bookingService.getBookingOwnership(booking).pipe(
+                  map((isOwner) => ({
+                    include: isOwner,
+                    booking,
+                  })),
+                  catchError(() => of({ include: false, booking })) // Exclude on error
+                );
+              }
+            });
+
+            return forkJoin(checks$);
+          })
+        )
+        .subscribe((results) => {
+          const filteredBookings = results
+            .filter((res) => res.include)
+            .map(({ booking }) => ({
+              id: booking.id,
+              title: booking.bookingTitle,
+              start: `${booking.bookingDate}T${booking.startTime}:00`,
+              end: `${booking.bookingDate}T${booking.endTime}:00`,
+              color: booking.bookingStatus ? '#4a90e2' : '#BE3D2A',
             }));
+
+          this.calendarOptions.events = filteredBookings;
         });
     }
   }

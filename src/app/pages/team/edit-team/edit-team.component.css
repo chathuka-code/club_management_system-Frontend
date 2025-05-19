@@ -35,7 +35,7 @@
     display: flex;
     gap: 12px; /* Space between buttons */
     align-items: center; /* Aligns buttons vertically */
-    margin-left: 1100px;
+    margin-left: 1020px;
   }
   .delete-button-row button {
     background-color: #ca0e0e !important; /* Green background */

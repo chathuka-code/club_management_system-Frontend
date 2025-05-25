@@ -123,6 +123,8 @@ export class AuthService {
       'user_roles',
       'current_role',
       'user_id',
+      'current_role_id',
+      'current_role_value',
     ].forEach((key) => {
       localStorage.removeItem(key);
     });

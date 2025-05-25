@@ -35,7 +35,7 @@
     display: flex;
     gap: 12px; /* Space between buttons */
     align-items: center; /* Aligns buttons vertically */
-    margin-left: 1020px;
+    margin-left: 1060px;
   }
   .fieldadmin-button-row button {
     color: white !important; /* White text for better contrast */

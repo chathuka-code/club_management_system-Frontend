@@ -92,7 +92,7 @@ export class FieldService {
         },
         error: (err) => {
           console.error('Error creating field:', err);
-          this.snackBar.open('Failed to create field', 'Close', {
+          this.snackBar.open(err.error.message, 'Close', {
             duration: 3000,
             panelClass: ['error-snackbar'],
           });
@@ -166,7 +166,7 @@ export class FieldService {
         }),
         catchError((err) => {
           console.error('Error updating field:', err);
-          this.snackBar.open('Failed to update field', 'Close', {
+          this.snackBar.open(err.error.message, 'Close', {
             duration: 3000,
             panelClass: ['error-snackbar'],
           });
@@ -258,13 +258,13 @@ export class FieldService {
       .pipe(
         tap((response) => {
           console.log('Deleted field admins successfully:', response);
-          this.snackBar.open('Field admins deleted successfully!', 'Close', {
+          this.snackBar.open('Field admins removed successfully!', 'Close', {
             duration: 3000,
           });
         }),
         catchError((err) => {
           console.error('Error deleting field admins:', err);
-          this.snackBar.open('Failed to delete field admins', 'Close', {
+          this.snackBar.open('Failed to remove field admins', 'Close', {
             duration: 3000,
             panelClass: ['error-snackbar'],
           });

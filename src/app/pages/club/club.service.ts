@@ -47,7 +47,7 @@ export class ClubService {
       },
       error: (err) => {
         console.error('Error creating club:', err);
-        this.snackBar.open('Failed to create club', 'Close', {
+        this.snackBar.open(err.error.message, 'Close', {
           duration: 3000,
           panelClass: ['error-snackbar'],
         });
@@ -126,7 +126,7 @@ export class ClubService {
         }),
         catchError((err) => {
           console.error('Error updating club:', err);
-          this.snackBar.open('Failed to update club', 'Close', {
+          this.snackBar.open(err.error.message, 'Close', {
             duration: 3000,
             panelClass: ['error-snackbar'],
           });
@@ -185,13 +185,13 @@ export class ClubService {
       .pipe(
         tap((response) => {
           console.log('Deleted club admins successfully:', response);
-          this.snackBar.open('Club admins deleted successfully!', 'Close', {
+          this.snackBar.open('Club admins removed successfully!', 'Close', {
             duration: 3000,
           });
         }),
         catchError((err) => {
           console.error('Error deleting club admins:', err);
-          this.snackBar.open('Failed to delete club admins', 'Close', {
+          this.snackBar.open('Failed to remove club admins', 'Close', {
             duration: 3000,
             panelClass: ['error-snackbar'],
           });

@@ -20,14 +20,21 @@
     </mat-form-field>
   
     <mat-form-field appearance="outline">
-      <mat-label>E-mail</mat-label>
-      <input
-        matInput
-        placeholder="Enter E-mail"
-        [(ngModel)]="user.email"
-        required
-      />
-    </mat-form-field>
+    <mat-label>E-mail</mat-label>
+    <input
+      matInput
+      placeholder="Enter E-mail"
+      [(ngModel)]="user.email"
+      required
+      type="email"
+      #emailInput="ngModel"
+      pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+      (ngModelChange)="isEmailValid = emailInput.valid ?? false"
+    />
+    <mat-error *ngIf="emailInput.invalid && emailInput.touched">
+      Please enter a valid email address.
+    </mat-error>
+  </mat-form-field>
   
     <mat-form-field appearance="outline">
       <mat-label>Password</mat-label>

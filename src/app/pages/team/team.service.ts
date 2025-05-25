@@ -166,7 +166,7 @@ export class TeamService {
         }),
         catchError((err) => {
           console.error('Error updating team:', err);
-          this.snackBar.open('Failed to update team', 'Close', {
+          this.snackBar.open(err.error.message, 'Close', {
             duration: 3000,
             panelClass: ['error-snackbar'],
           });
@@ -202,13 +202,13 @@ export class TeamService {
       .pipe(
         tap((response) => {
           console.log('Deleted team managers successfully:', response);
-          this.snackBar.open('Team managers deleted successfully!', 'Close', {
+          this.snackBar.open('Team managers removed successfully!', 'Close', {
             duration: 3000,
           });
         }),
         catchError((err) => {
           console.error('Error deleting team managers:', err);
-          this.snackBar.open('Failed to delete team managers', 'Close', {
+          this.snackBar.open('Failed to remove team managers', 'Close', {
             duration: 3000,
             panelClass: ['error-snackbar'],
           });

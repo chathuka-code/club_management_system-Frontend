@@ -57,7 +57,7 @@ export class CreateBookingComponent implements OnInit {
   isTimeRangeValid: boolean = false;
   userId: string | null = null;
   currentRole: string = '';
-  idUser: string = '';
+  idUser: string | null = null;
 
   bookableFields: FieldPart[] = [];
   teams: any[] = [];
@@ -76,6 +76,7 @@ export class CreateBookingComponent implements OnInit {
     bookingDate: null,
     description: '',
     isDeleted: false,
+    createdRoleId: undefined,
   };
 
   ngOnInit() {
@@ -107,6 +108,7 @@ export class CreateBookingComponent implements OnInit {
     this.authService.currentRole$.subscribe((role) => {
       this.currentRole = role?.type || '';
       this.idUser = role?.id || '';
+      this.booking.createdRoleId = this.idUser || undefined;
 
       if (this.currentRole === 'super-admin') {
         this.teamService.getAllTeamsEntire().subscribe((teams) => {

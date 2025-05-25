@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EditUserRolesDialogComponent } from '../edit-user-roles-dialog/edit-user-roles-dialog.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-edit-user',
@@ -32,6 +33,7 @@ export class EditUserComponent implements OnInit {
   private dialog = inject(MatDialog);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private snackBar = inject(MatSnackBar);
 
   user: User = {
     firstName: '',
@@ -41,6 +43,7 @@ export class EditUserComponent implements OnInit {
     isSuperAdmin: false,
     isDeleted: false,
   };
+  isEmailValid: boolean = true; // Flag to check if email is valid
 
   clubAdmins = signal<{ clubId: string; clubName: string }[]>([]); // Array to hold club admins
   teamManagers = signal<{ teamId: string; teamName: string }[]>([]); // Array to hold team managers
@@ -73,6 +76,12 @@ export class EditUserComponent implements OnInit {
   }
 
   saveUser() {
+    if (!this.isEmailValid) {
+      this.snackBar.open('Please enter a valid email address.', 'Close', {
+        duration: 3000,
+      });
+      return;
+    }
     this.userService
       .updateUser(this.userId!, this.user, {
         clubIds: this.deletedClubAdmins(),
@@ -86,6 +95,7 @@ export class EditUserComponent implements OnInit {
         },
         (error) => {
           console.error('Error updating user:', error);
+          return;
         }
       );
     // Check if any roles were assigned
@@ -106,9 +116,19 @@ export class EditUserComponent implements OnInit {
             fieldId: admin.fieldId,
           })),
         })
-        .subscribe();
+        .subscribe(
+          (response) => {
+            console.log('Roles assigned successfully:', response);
+          },
+          (error) => {
+            console.error('Error assigning roles:', error);
+            this.snackBar.open('Failed to assign roles', 'Close', {
+              duration: 3000,
+              panelClass: ['error-snackbar'],
+            });
+          }
+        );
     }
-    this.router.navigate(['/users']);
   }
 
   openRolesDialog(): void {

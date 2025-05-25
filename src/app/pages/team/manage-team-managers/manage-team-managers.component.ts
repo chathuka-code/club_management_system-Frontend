@@ -86,7 +86,7 @@ export class ManageTeamManagersComponent implements OnInit {
       width: '350px',
       data: {
         title: 'Confirm Delete',
-        message: 'Are you sure you want to delete this booking?',
+        message: 'Are you sure you want to remove these team managers?',
         confirmText: 'Delete',
         cancelText: 'Cancel',
       },

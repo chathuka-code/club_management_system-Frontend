@@ -12,7 +12,7 @@
   display: flex;
   gap: 12px; /* Space between buttons */
   align-items: center; /* Aligns buttons vertically */
-  margin-left: 950px;
+  margin-left: 1035px;
 }
 
 .create-button-row,

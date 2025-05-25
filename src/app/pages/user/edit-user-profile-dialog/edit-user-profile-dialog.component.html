@@ -31,7 +31,6 @@
       type="password"
       placeholder="Enter current password"
       [(ngModel)]="currentPassword"
-      (ngModelChange)="checkPassword()"
     />
   </mat-form-field>
 
@@ -43,7 +42,6 @@
       type="password"
       placeholder="Enter new password"
       [(ngModel)]="newPassword"
-      [disabled]="!isPasswordCorrect"
     />
   </mat-form-field>
 
@@ -55,7 +53,6 @@
       type="password"
       placeholder="Re-enter new password"
       [(ngModel)]="confirmPassword"
-      [disabled]="!isPasswordCorrect"
     />
   </mat-form-field>
 </div>

@@ -84,7 +84,7 @@ export class ManageClubAdminsComponent implements OnInit {
       width: '350px',
       data: {
         title: 'Confirm Delete',
-        message: 'Are you sure you want to delete this booking?',
+        message: 'Are you sure you want to remove these club admins?',
         confirmText: 'Delete',
         cancelText: 'Cancel',
       },

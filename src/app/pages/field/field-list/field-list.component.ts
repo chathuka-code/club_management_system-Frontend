@@ -63,7 +63,7 @@ export class FieldListComponent implements OnInit {
       width: '350px',
       data: {
         title: 'Confirm Delete',
-        message: 'Are you sure you want to delete this booking?',
+        message: 'Are you sure you want to delete these fields?',
         confirmText: 'Delete',
         cancelText: 'Cancel',
       },

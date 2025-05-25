@@ -52,7 +52,7 @@ export class ClubListComponent implements OnInit {
       width: '350px',
       data: {
         title: 'Confirm Delete',
-        message: 'Are you sure you want to delete this booking?',
+        message: 'Are you sure you want to delete these clubs?',
         confirmText: 'Delete',
         cancelText: 'Cancel',
       },

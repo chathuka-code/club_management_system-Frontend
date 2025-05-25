@@ -48,7 +48,6 @@ export class NavBarComponent implements OnInit, OnDestroy {
   selectedRole: string = '';
   activeLabel: string = '';
 
-
   private authService = inject(AuthService); // Get service via inject()
   private router = inject(Router);
   // Define all possible menu items with required roles
@@ -163,29 +162,6 @@ export class NavBarComponent implements OnInit, OnDestroy {
     this.roleSubscription?.unsubscribe();
   }
 
-  // In your component
-  navigateToTeams() {
-    const club = localStorage.getItem('current_role');
-    const clubId = club ? JSON.parse(club).id : null;
-
-    if (clubId) {
-      this.router.navigate(['/chooseClubforTeam/teams', clubId]);
-    } else {
-      // Handle case where no club is selected
-      this.router.navigate(['/club-selection']);
-      // Or show a toast: "Please select a club first"
-    }
-  }
-
-  // getTeamRoute() {
-  //   const clubId = localStorage.getItem('current_role_id');
-  //   if (!clubId) {
-  //     // Handle case where clubId isn't set
-  //     this.router.navigate(['/club-selection']);
-  //     return '';
-  //   }
-  //   return `/chooseClubforTeam/teams/${clubId}`;
-  // }
   private filterMenuItems() {
     const currentRole = this.authService.currentRole();
     const currentRoleType = currentRole?.type || '';
@@ -202,17 +178,6 @@ export class NavBarComponent implements OnInit, OnDestroy {
       if (currentRoleType && item.roles.includes(currentRoleType)) {
         return true;
       }
-
-      // Additional checks for specific cases
-      // if (currentRoleType === 'club-admin') {
-      //   // Club admins might need special access to some team manager features
-      //   if (
-      //     item.route === '/chooseClubforTeam' &&
-      //     currentRole?.name?.includes('Club Admin')
-      //   ) {
-      //     return true;
-      //   }
-      // }
 
       return false;
     });

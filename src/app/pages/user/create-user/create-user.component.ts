@@ -9,6 +9,7 @@ import { UserService, User } from '../user.service';
 import { MatDialog } from '@angular/material/dialog';
 import { UserRolesDialogComponent } from '../user-roles-dialog/user-roles-dialog.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-create-user',
@@ -28,6 +29,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 export class CreateUserComponent {
   private userService = inject(UserService);
   private dialog = inject(MatDialog);
+  private snackBar = inject(MatSnackBar);
 
   isEmailValid: boolean = false; // Flag to check if email is valid
   isPasswordValid: boolean = false; // Flag to check if password is valid
@@ -91,15 +93,25 @@ export class CreateUserComponent {
       !this.user.email ||
       !this.user.password
     ) {
-      alert('First name, last name, and email are required!');
+      this.snackBar.open(
+        'First name, last name, and email are required!',
+        'Close',
+        {
+          duration: 3000,
+        }
+      );
       return;
     }
     if (!this.isEmailValid) {
-      alert('Please enter a valid email address!');
+      this.snackBar.open('Please enter a valid email address!', 'Close', {
+        duration: 3000,
+      });
       return;
     }
     if (!this.isPasswordValid) {
-      alert('Please enter a valid password!');
+      this.snackBar.open('Please enter a valid password!', 'Close', {
+        duration: 3000,
+      });
       return;
     }
 

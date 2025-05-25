@@ -62,6 +62,7 @@ export class EditBookingComponent implements OnInit {
   isOverlapping: boolean = false;
   isTimeRangeValid: boolean = true;
   isBookingOwned: Boolean = false;
+  isFacilityOwned: Boolean = false;
   currentRole: string = '';
   idUser: string = '';
 
@@ -74,7 +75,7 @@ export class EditBookingComponent implements OnInit {
   booking: Booking = {
     bookingTitle: '',
     fieldPartId: '',
-    teamId: '',
+    teamId: undefined,
     userId: '',
     bookingStatus: false,
     startTime: '',
@@ -82,6 +83,7 @@ export class EditBookingComponent implements OnInit {
     bookingDate: null,
     description: '',
     isDeleted: false,
+    createdRoleId: undefined,
   };
 
   ngOnInit() {
@@ -125,11 +127,18 @@ export class EditBookingComponent implements OnInit {
             this.isBookingOwned = response;
           },
         });
+        this.bookingService.getFacilityOwnership(booking).subscribe({
+          next: (response) => {
+            console.log('Facility ownership:', response);
+            this.isFacilityOwned = response;
+          },
+        });
       });
 
     this.authService.currentRole$.subscribe((role) => {
       this.currentRole = role?.type || '';
       this.idUser = role?.id || '';
+      this.booking.createdRoleId = this.idUser;
 
       if (this.currentRole === 'super-admin') {
         this.teamService.getAllTeamsEntire().subscribe((teams) => {
@@ -428,7 +437,6 @@ export class EditBookingComponent implements OnInit {
       .updateBooking(this.bookingId || '', this.booking)
       .subscribe({
         next: (response) => {
-          console.log('Booking updated successfully:', response);
           this.router.navigate([
             '/chooseClubforBooking/chooseFieldforBooking/calendar',
             this.fieldId || '', //consider

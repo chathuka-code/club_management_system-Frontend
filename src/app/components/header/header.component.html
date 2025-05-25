@@ -1,10 +1,10 @@
 <mat-toolbar color="primary">
-  <span>Club Management System</span>
+  <span class="logo"><h1>ClubEngine</h1></span>
   <span class="spacer"></span>
-  
+
   <mat-form-field appearance="fill" *ngIf="roleOptions.length > 0">
     <mat-label>Current Role</mat-label>
-    <mat-select 
+    <mat-select
       [value]="selectedRole?.value || ''"
       (valueChange)="onRoleChange($event)"
     >
@@ -13,4 +13,8 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
+  <!-- Profile Icon Button -->
+  <div class="profile-icon" (click)="openProfileDialog()">
+    <mat-icon>person</mat-icon>
+  </div>
 </mat-toolbar>

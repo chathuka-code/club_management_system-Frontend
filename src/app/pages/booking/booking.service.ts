@@ -16,6 +16,8 @@ export interface Booking {
   teamId?: string;
   bookingStatus: boolean;
   isDeleted: boolean;
+  isAutoApproved?: boolean;
+  createdRoleId?: string;
 }
 
 @Injectable({
@@ -40,10 +42,20 @@ export class BookingService {
   createBooking(booking: Booking): Observable<Booking> {
     return this.http.post<Booking>(this.apiUrl, booking).pipe(
       tap((response) => {
-        console.log('Booking created successfully:', response);
-        this.snackBar.open('Booking created successfully!', 'Close', {
-          duration: 3000,
-        });
+        const isAutoApproved = response.isAutoApproved;
+        if (isAutoApproved) {
+          this.snackBar.open('Booking created successfully!', 'Close', {
+            duration: 3000,
+          });
+        } else {
+          this.snackBar.open(
+            'Booking created successfully! Awaiting approval.',
+            'Close',
+            {
+              duration: 3000,
+            }
+          );
+        }
       }),
       catchError((err) => {
         console.error('Error creating booking:', err);
@@ -68,6 +80,23 @@ export class BookingService {
         }),
         catchError((err) => {
           console.error('Error fetching booking ownership:', err);
+          return throwError(() => err);
+        })
+      );
+  };
+
+  getFacilityOwnership = (booking: Booking): Observable<Boolean> => {
+    return this.http
+      .post<Boolean>(`${this.apiUrl}/checkFacilityOwnership`, booking, {
+        headers: this.headers,
+      })
+      .pipe(
+        map((response) => {
+          console.log('Facility ownership:', response);
+          return response;
+        }),
+        catchError((err) => {
+          console.error('Error fetching Facility ownership:', err);
           return throwError(() => err);
         })
       );
@@ -123,10 +152,20 @@ export class BookingService {
       .patch<Booking>(`${this.apiUrl}/${bookingId}`, booking)
       .pipe(
         tap((response) => {
-          console.log('Booking updated successfully:', response);
-          this.snackBar.open('Booking updated successfully!', 'Close', {
-            duration: 3000,
-          });
+          const isAutoApproved = response.isAutoApproved;
+          if (isAutoApproved) {
+            this.snackBar.open('Booking updated successfully!', 'Close', {
+              duration: 3000,
+            });
+          } else {
+            this.snackBar.open(
+              'Booking updated successfully! Awaiting approval.',
+              'Close',
+              {
+                duration: 3000,
+              }
+            );
+          }
         }),
         catchError((err) => {
           console.error('Error updating booking:', err);
@@ -178,10 +217,14 @@ export class BookingService {
         }),
         catchError((err) => {
           console.error('Error approving booking:', err);
-          this.snackBar.open('Failed to approve booking', 'Close', {
-            duration: 3000,
-            panelClass: ['error-snackbar'],
-          });
+          this.snackBar.open(
+            'Can not approve. Conflicting booking exists!',
+            'Close',
+            {
+              duration: 3000,
+              panelClass: ['error-snackbar'],
+            }
+          );
           return throwError(() => err);
         })
       );

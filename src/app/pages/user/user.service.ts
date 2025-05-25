@@ -173,10 +173,21 @@ export class UserService {
         },
         error: (err) => {
           console.error('Error creating user:', err);
-          this.snackBar.open('Failed to create user', 'Close', {
-            duration: 3000,
-            panelClass: ['error-snackbar'],
-          });
+          if (err.status === 500) {
+            this.snackBar.open(
+              'Email already exists. Can not create the user!',
+              'Close',
+              {
+                duration: 3000,
+                panelClass: ['error-snackbar'],
+              }
+            );
+          } else {
+            this.snackBar.open('Failed to create user', 'Close', {
+              duration: 3000,
+              panelClass: ['error-snackbar'],
+            });
+          }
         },
       });
   }
@@ -226,7 +237,26 @@ export class UserService {
             headers: this.headers,
             body: removedRoles,
           })
-        )
+        ),
+        catchError((err) => {
+          if (err.status === 500) {
+            this.snackBar.open(
+              'Email already exists. Cannot update the user!',
+              'Close',
+              {
+                duration: 3000,
+                panelClass: ['error-snackbar'],
+              }
+            );
+          } else {
+            console.error('Error updating user:', err);
+            this.snackBar.open('Failed to update user', 'Close', {
+              duration: 3000,
+              panelClass: ['error-snackbar'],
+            });
+          }
+          return throwError(() => err);
+        })
       );
   }
 

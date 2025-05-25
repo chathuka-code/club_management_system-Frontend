@@ -55,7 +55,7 @@ export class TeamListComponent implements OnInit {
       width: '350px',
       data: {
         title: 'Confirm Delete',
-        message: 'Are you sure you want to delete this booking?',
+        message: 'Are you sure you want to delete these teams?',
         confirmText: 'Delete',
         cancelText: 'Cancel',
       },

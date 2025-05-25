@@ -7,6 +7,9 @@ import { MatOptionModule } from '@angular/material/core';
 import { AuthService } from '../../pages/auth/auth.service';
 import { UserService } from '../../pages/user/user.service';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { EditUserProfileDialogComponent } from '../../pages/user/edit-user-profile-dialog/edit-user-profile-dialog.component';
+import { MatIconModule } from '@angular/material/icon';
 
 export interface RoleOption {
   value: string;
@@ -30,6 +33,7 @@ export interface RoleOption {
     MatFormFieldModule,
     MatSelectModule,
     MatOptionModule,
+    MatIconModule,
   ],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
@@ -41,18 +45,18 @@ export class HeaderComponent {
   constructor(
     private authService: AuthService,
     private userService: UserService,
+    private dialog: MatDialog,
     private router: Router
   ) {
     this.initializeRoles();
   }
 
   private initializeRoles() {
-    // Get individual items from localStorage
     const token = localStorage.getItem('token');
     const isSuperAdmin = localStorage.getItem('is_super_admin') === 'true';
     const roles = JSON.parse(localStorage.getItem('user_roles') || '{}');
-    console.log('Roles:', roles);
-    // Add Super Admin option if applicable
+    const savedRoleValue = localStorage.getItem('current_role_value'); //store full value like club-<id>
+
     if (isSuperAdmin) {
       this.roleOptions.push({
         value: 'super-admin',
@@ -61,7 +65,6 @@ export class HeaderComponent {
       });
     }
 
-    // Add Club Admin roles
     if (roles.clubAdmins) {
       roles.clubAdmins.forEach((club: any) => {
         this.roleOptions.push({
@@ -74,7 +77,6 @@ export class HeaderComponent {
       });
     }
 
-    // Add Team Manager roles
     if (roles.teamManagers) {
       roles.teamManagers.forEach((team: any) => {
         this.roleOptions.push({
@@ -87,7 +89,6 @@ export class HeaderComponent {
       });
     }
 
-    // Add Field Admin roles (if any)
     if (roles.fieldAdmins) {
       roles.fieldAdmins.forEach((field: any) => {
         this.roleOptions.push({
@@ -100,7 +101,6 @@ export class HeaderComponent {
       });
     }
 
-    // Add Individual User option
     this.roleOptions.push({
       value: 'individual-user',
       display: 'Individual User',
@@ -109,9 +109,18 @@ export class HeaderComponent {
       name: null,
     });
 
-    // Set initial selected role (first available)
-    if (this.roleOptions.length > 0) {
-      this.selectedRole = this.roleOptions[0];
+    //Use the saved role if it exists and matches a valid option
+    const matchedSavedRole = this.roleOptions.find(
+      (opt) => opt.value === savedRoleValue
+    );
+
+    if (matchedSavedRole) {
+      this.selectedRole = matchedSavedRole;
+    } else {
+      this.selectedRole = this.roleOptions[0] ?? null;
+    }
+
+    if (this.selectedRole) {
       this.userService
         .updateUserActiveRole(
           localStorage.getItem('user_id')!,
@@ -121,10 +130,10 @@ export class HeaderComponent {
         .subscribe((response) => {
           console.log('User role updated successfully:', response);
         });
-      // Store initial role selection
       this.authService.setCurrentRole(this.selectedRole);
+      localStorage.setItem('current_role_id', this.selectedRole.id || '');
+      localStorage.setItem('current_role_value', this.selectedRole.value); // Save value too
     }
-    localStorage.setItem('current_role_id', this.selectedRole?.id || '');
   }
 
   onRoleChange(selectedValue: string) {
@@ -151,5 +160,14 @@ export class HeaderComponent {
     }
 
     localStorage.setItem('current_role_id', this.selectedRole?.id || '');
+    localStorage.setItem('current_role_value', this.selectedRole?.value || ''); // Save value
+  }
+
+  openProfileDialog(): void {
+    this.dialog.open(EditUserProfileDialogComponent, {
+      width: '500px',
+      height: 'auto',
+      data: {},
+    });
   }
 }

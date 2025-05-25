@@ -148,7 +148,7 @@
     *The selected time range is invalid.
   </div>
 
-  <mat-form-field appearance="outline">
+  <mat-form-field *ngIf="currentRole!='field-admin' && currentRole!='individual-user'" appearance="outline">
     <mat-label>Link Team</mat-label>
     <mat-select [(ngModel)]="booking.teamId">
       <mat-option *ngFor="let team of teams" [value]="team.id">
